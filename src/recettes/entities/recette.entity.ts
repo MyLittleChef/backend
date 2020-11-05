@@ -1,6 +1,7 @@
 import {
     BaseEntity,
     Entity,
+    Unique,
     PrimaryGeneratedColumn,
     Column,
     ManyToOne,
@@ -10,6 +11,7 @@ import {
 import { Ingredient } from './ingredient.entity';
 import { Regime } from './regime.entity';
 @Entity()
+@Unique(['nom'])
 export class Recette extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;

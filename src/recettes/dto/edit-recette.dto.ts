@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class CreateRecetteDto {
+export class EditRecetteDto {
     @IsNotEmpty()
     nom: string;
 

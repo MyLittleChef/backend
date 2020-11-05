@@ -4,8 +4,7 @@
 /files
 # Env variables
 *.env
-/backend/dist
-/backend/node_modules
+
 # Logs
 logs
 *.log
