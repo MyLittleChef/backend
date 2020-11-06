@@ -1,4 +1,5 @@
 import { IsNotEmpty } from "class-validator";
+import { Regime } from "../entities/regime.enum";
 
 export class CreateRecetteDto {
     @IsNotEmpty()
@@ -17,5 +18,5 @@ export class CreateRecetteDto {
     nbpersonnes: number;
 
     @IsNotEmpty()
-    regime: string;
+    regime: Regime;
 }

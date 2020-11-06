@@ -5,25 +5,21 @@ import { CreateRecetteDto } from './dto/create-recette.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { imageFileFilter, editFileName } from './file-upload.utils';
-import { IngredientService } from './ingredient.service';
-import { Regime } from './entities/regime.entity';
-import { Ingredient } from './entities/ingredient.entity';
 import { EditRecetteDto } from './dto/edit-recette.dto';
 
 @Controller('recettes')
 export class RecetteController {
   constructor(private recetteService: RecetteService,
-    private ingredientService: IngredientService
     ) {}
 
-  @Get('/recette/:id')
+  @Get('/:id')
   async getRecette(
   @Param('id', ParseIntPipe) recetteId:number): Promise<Recette> {
       return this.recetteService.get(recetteId);
   }
   
 
-  @Post('/recette')
+  @Post('')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -40,7 +36,7 @@ export class RecetteController {
     return this.recetteService.create(createRecetteDto);
   }
 
-  @Put('/recette/:id')
+  @Put('/:id')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -58,7 +54,7 @@ export class RecetteController {
     return this.recetteService.edit(recetteId, editRecetteDto);
   }
 
-  @Delete('/recette/:id')
+  @Delete('/:id')
   async deleteRecette(
     @Param('id', ParseIntPipe) recetteId: number,
   ): Promise<void>{

@@ -9,7 +9,7 @@ import {
     ManyToMany,
 } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
-import { Regime } from './regime.entity';
+import { Regime } from './regime.enum';
 @Entity()
 @Unique(['nom'])
 export class Recette extends BaseEntity {
@@ -38,12 +38,8 @@ export class Recette extends BaseEntity {
     @Column()
     photopath: string;
 
-    @ManyToOne(
-      type => Regime,
-      regime => regime.recettes,
-      { eager: true },
-    )
-    regime: Regime[];
+    @Column()
+    regime: Regime;
 
 
 

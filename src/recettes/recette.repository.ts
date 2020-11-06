@@ -18,7 +18,7 @@ export class RecetteRepository extends Repository<Recette> {
         recette.duree = duree;
         recette.difficulte = difficulte;
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-        recette.regime = { id: regime } as any;
+        recette.regime = regime;
         recette.nbpersonnes = nbpersonnes;
         
         try {

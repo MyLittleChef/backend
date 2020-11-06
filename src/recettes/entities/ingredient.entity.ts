@@ -16,7 +16,7 @@ export class Ingredient extends BaseEntity {
     nom: string;
 
     @Column()
-    unite_mesure: string;
+    uniteMesure: string;
 
     @Column()
     saison: string;
