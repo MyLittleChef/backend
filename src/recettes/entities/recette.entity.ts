@@ -7,6 +7,7 @@ import {
     ManyToOne,
     OneToMany,
     ManyToMany,
+    JoinTable,
 } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
 import { Regime } from './regime.enum';
@@ -26,14 +27,13 @@ export class Recette extends BaseEntity {
     difficulte: string;
 
     @ManyToMany(
-      type => Ingredient,
-      ingredient => ingredient.recettes,
-      {eager: true},
+      () => Ingredient,
     )
+    @JoinTable()
     ingredients: Ingredient[];
 
     @Column()
-    nbpersonnes: number;
+    nbpersonnes: string;
 
     @Column()
     photopath: string;

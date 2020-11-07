@@ -11,7 +11,4 @@ export class CreateIngredientDto {
 
     @IsNotEmpty()    
     saison: Saison;
-
-    @IsOptional()
-    recettes: number[];
 }

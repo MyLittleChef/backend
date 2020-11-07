@@ -20,6 +20,7 @@ export class RecetteRepository extends Repository<Recette> {
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
         recette.regime = regime;
         recette.nbpersonnes = nbpersonnes;
+        recette.photopath = "/root/";
         
         try {
             await recette.save();

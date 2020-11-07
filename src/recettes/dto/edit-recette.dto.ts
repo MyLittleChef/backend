@@ -15,7 +15,7 @@ export class EditRecetteDto {
     ingredients: string[]
     
     @IsNotEmpty()
-    nbpersonnes: number;
+    nbpersonnes: string;
 
     @IsNotEmpty()
     regime: Regime;

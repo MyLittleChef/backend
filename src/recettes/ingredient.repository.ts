@@ -11,19 +11,12 @@ import { CreateIngredientDto } from './dto/create-ingredient.dto';
 export class IngredientRepository extends Repository<Ingredient> {
     private logger = new Logger('IngredientRepository');
     async createIngredient(createIngredientDto: CreateIngredientDto): Promise<Ingredient> {
-        const { nom, uniteMesure, saison, recettes } = createIngredientDto;
+        const { nom, uniteMesure, saison } = createIngredientDto;
         const ingredient = this.create();
         ingredient.nom = nom;
         ingredient.uniteMesure = uniteMesure;
         ingredient.saison = saison;
 
-        if(recettes.length != 0){
-            ingredient.recettes = recettes.map(recetteId => ({ id: recetteId } as any));
-        } else {
-            ingredient.recettes = [];
-        }
-        
-        
         try {
             await ingredient.save();
         } catch (error) {

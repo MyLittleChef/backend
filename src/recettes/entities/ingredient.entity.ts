@@ -4,6 +4,8 @@ import {
     PrimaryGeneratedColumn,
     Column,
     ManyToMany,
+    OneToMany,
+    ManyToOne,
 } from 'typeorm';
 import { Recette } from './recette.entity';
 
@@ -21,10 +23,4 @@ export class Ingredient extends BaseEntity {
     @Column()
     saison: string;
 
-    @ManyToMany(
-      type => Recette,
-      recette => recette.ingredients,
-      {eager: false},
-    )
-    recettes: Recette[];
 }
