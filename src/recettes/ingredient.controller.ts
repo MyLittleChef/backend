@@ -34,7 +34,7 @@ export class IngredientController {
     return this.ingredientService.create(createIngredientDto);
   }
 
-  @Delete('/recette/:id')
+  @Delete('/:id')
   async deleteRecette(
     @Param('id', ParseIntPipe) ingredientId: number,
   ): Promise<void>{

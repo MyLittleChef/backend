@@ -24,7 +24,7 @@ export class Ingredient extends BaseEntity {
     @ManyToMany(
       type => Recette,
       recette => recette.ingredients,
-      {eager: true},
+      {eager: false},
     )
     recettes: Recette[];
 }

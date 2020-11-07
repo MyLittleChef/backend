@@ -4,9 +4,11 @@ import { RecetteService } from './recette.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecetteRepository } from './recette.repository'
 import { IngredientRepository } from './ingredient.repository';
+import { IngredientController } from './ingredient.controller';
+import { IngredientService } from './ingredient.service';
 @Module({
-  imports: [TypeOrmModule.forFeature([RecetteRepository, IngredientRepository])],
-  controllers: [RecetteController],
-  providers: [RecetteService],
+  imports: [TypeOrmModule.forFeature([RecetteRepository]), TypeOrmModule.forFeature([IngredientRepository])],
+  controllers: [RecetteController, IngredientController],
+  providers: [RecetteService, IngredientService],
 })
 export class RecetteModule {}

@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RecetteController } from './recettes/recette.controller';
-import { RecetteService } from './recettes/recette.service';
+import { RecetteModule } from './recettes/recette.module';
+import { typeOrmConfig } from './config/typeorm.config';
+
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'test',
-    entities: [],
-    synchronize: true,
-  }),],
-  controllers: [RecetteController],
-  providers: [RecetteService],
+  imports: [TypeOrmModule.forRoot(typeOrmConfig), RecetteModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
