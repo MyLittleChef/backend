@@ -4,11 +4,10 @@ import {
     Unique,
     PrimaryGeneratedColumn,
     Column,
-    ManyToOne,
-    OneToMany,
     ManyToMany,
     JoinTable,
 } from 'typeorm';
+import { Difficulty } from './difficulty.enum';
 import { Ingredient } from './ingredient.entity';
 import { Regime } from './regime.enum';
 @Entity()
@@ -18,13 +17,27 @@ export class Recette extends BaseEntity {
     id: number;
 
     @Column()
-    nom: string;
+    title: string;
+
+    @Column({unique: true})
+    externalId: string;
 
     @Column()
-    duree: string;
+    readyInMinutes: string;
 
     @Column()
-    difficulte: string;
+    servings: string;
+
+    @Column()
+    cuisinesType: string;
+
+    @Column()
+    instructions: string;
+
+    @Column()
+    materialNeeded: string;
+    @Column()
+    difficulty: Difficulty;
 
     @ManyToMany(
       () => Ingredient,
@@ -41,6 +54,7 @@ export class Recette extends BaseEntity {
     @Column()
     regime: Regime;
 
-
+    @Column()
+    metaInformation: string;
 
 }

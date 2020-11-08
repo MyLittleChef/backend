@@ -1,25 +1,44 @@
 import { IsNotEmpty } from "class-validator";
+import { Difficulty } from "../entities/difficulty.enum";
 import { Regime } from "../entities/regime.enum";
 
 export class EditRecetteDto {
     @IsNotEmpty()
-    nom: string;
+    title: string;
 
     @IsNotEmpty()
-    duree: string;
-    
+    externalId: string;
+
     @IsNotEmpty()
-    difficulte: string;
+    readyInMinutes: string;
+
+    @IsNotEmpty()
+    servings: string;
+
+    @IsNotEmpty()
+    cuisinesType: string;
+
+    @IsNotEmpty()
+    instructions: string;
+
+    @IsNotEmpty()
+    materialNeeded: string;
+        
+    @IsNotEmpty()
+    difficulty: Difficulty;
 
     @IsNotEmpty()
     ingredients: string[]
     
     @IsNotEmpty()
-    nbpersonnes: string;
+    personsNumber: string;
 
     @IsNotEmpty()
     regime: Regime;
 
     @IsNotEmpty()
     photopath: string;
+
+    @IsNotEmpty()
+    metaInformation: string;
 }

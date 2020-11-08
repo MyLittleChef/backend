@@ -1,17 +1,10 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
-import { Saison } from "../entities/saison.enum";
-import { UniteMesure } from "../entities/unite-mesure.enum";
+import { IsNotEmpty } from "class-validator";
 
 export class CreateIngredientDto {
     @IsNotEmpty()
     nom: string;
 
     @IsNotEmpty()
-    uniteMesure: UniteMesure;
+    uniteMesure: string;;
 
-    @IsNotEmpty()    
-    saison: Saison;
-
-    @IsNotEmpty()
-    photopath: string;
 }

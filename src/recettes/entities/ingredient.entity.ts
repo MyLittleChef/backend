@@ -3,12 +3,7 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
-    ManyToMany,
-    OneToMany,
-    ManyToOne,
 } from 'typeorm';
-import { Recette } from './recette.entity';
-
 @Entity()
 export class Ingredient extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -20,9 +15,4 @@ export class Ingredient extends BaseEntity {
     @Column()
     uniteMesure: string;
 
-    @Column()
-    saison: string;
-
-    @Column()
-    photopath: string;
 }
