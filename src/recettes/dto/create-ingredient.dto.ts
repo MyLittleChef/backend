@@ -11,4 +11,7 @@ export class CreateIngredientDto {
 
     @IsNotEmpty()    
     saison: Saison;
+
+    @IsNotEmpty()
+    photopath: string;
 }

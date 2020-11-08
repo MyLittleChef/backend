@@ -23,4 +23,6 @@ export class Ingredient extends BaseEntity {
     @Column()
     saison: string;
 
+    @Column()
+    photopath: string;
 }

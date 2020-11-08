@@ -19,4 +19,7 @@ export class EditRecetteDto {
 
     @IsNotEmpty()
     regime: Regime;
+
+    @IsNotEmpty()
+    photopath: string;
 }
