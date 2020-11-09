@@ -28,6 +28,7 @@ export class MarkRepository extends Repository<Mark> {
         }
     }
     this.logger.verbose(`Mark ${mark.recipeId} is being saved !`);
+    delete mark.user;
     return mark;
   }
 }
