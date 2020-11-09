@@ -12,15 +12,21 @@ import { EditRecetteDto } from './dto/edit-recette.dto';
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     async createRecette(createRecetteDto: CreateRecetteDto): Promise<Recette> {
-        const { nom, duree, difficulte, ingredients, nbpersonnes, regime, photopath } = createRecetteDto;
-        const recette = this.create();
-        recette.nom = nom;
-        recette.duree = duree;
-        recette.difficulte = difficulte;
+      const { title, externalId, difficulty, ingredients, readyInMinutes, regime, photopath, servings, mealType, instructions, materialNeeded, personsNumber, metaInformation  } = createRecetteDto;
+      const recette = this.create();
+        recette.title = title;
+        recette.externalId = externalId;
+        recette.difficulty = difficulty;
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
         recette.regime = regime;
-        recette.nbpersonnes = nbpersonnes;
+        recette.readyInMinutes = readyInMinutes;
         recette.photopath = photopath;
+        recette.servings = servings;
+        recette.mealType = mealType;
+        recette.instructions = instructions;
+        recette.materialNeeded = materialNeeded;
+        recette.personsNumber = personsNumber;
+        recette.metaInformation = metaInformation;
         
         try {
             await recette.save();
@@ -30,7 +36,7 @@ export class RecetteRepository extends Repository<Recette> {
               throw new ConflictException('Name of recipe already exists');
             } else {
               this.logger.verbose(
-                `Problem while saving the Recette: ${recette.nom}, error is : ${error} !`,
+                `Problem while saving the Recette: ${recette.title}, error is : ${error} !`,
               );
               throw new InternalServerErrorException(error);
             }
@@ -38,18 +44,24 @@ export class RecetteRepository extends Repository<Recette> {
         return recette;
     }
     async editRecette(recetteId: number,editRecetteDto: EditRecetteDto): Promise<Recette> {
-        const { nom, duree, difficulte, ingredients, nbpersonnes, regime, photopath } = editRecetteDto;
+        const { title, externalId, difficulty, ingredients, readyInMinutes, regime, photopath, servings, mealType, instructions, materialNeeded, personsNumber, metaInformation  } = editRecetteDto;
         const recette = await this.findOne({
             id: recetteId,
           });
         if(recette){
-            recette.nom = nom;
-            recette.duree = duree;
-            recette.difficulte = difficulte;
-            recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-            recette.regime = { id: regime } as any;
-            recette.nbpersonnes = nbpersonnes;
-            recette.photopath = photopath;
+          recette.title = title;
+          recette.externalId = externalId;
+          recette.difficulty = difficulty;
+          recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
+          recette.regime = regime;
+          recette.readyInMinutes = readyInMinutes;
+          recette.photopath = photopath;
+          recette.servings = servings;
+          recette.mealType = mealType;
+          recette.instructions = instructions;
+          recette.materialNeeded = materialNeeded;
+          recette.personsNumber = personsNumber;
+          recette.metaInformation = metaInformation;
 
             try {
                 await recette.save();

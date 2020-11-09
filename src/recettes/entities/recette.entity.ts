@@ -11,7 +11,7 @@ import { Difficulty } from './difficulty.enum';
 import { Ingredient } from './ingredient.entity';
 import { Regime } from './regime.enum';
 @Entity()
-@Unique(['nom'])
+@Unique(['externalId'])
 export class Recette extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -19,7 +19,7 @@ export class Recette extends BaseEntity {
     @Column()
     title: string;
 
-    @Column({unique: true})
+    @Column()
     externalId: string;
 
     @Column()
@@ -29,7 +29,7 @@ export class Recette extends BaseEntity {
     servings: string;
 
     @Column()
-    cuisinesType: string;
+    mealType: string;
 
     @Column()
     instructions: string;
@@ -46,7 +46,7 @@ export class Recette extends BaseEntity {
     ingredients: Ingredient[];
 
     @Column()
-    nbpersonnes: string;
+    personsNumber: string;
 
     @Column()
     photopath: string;

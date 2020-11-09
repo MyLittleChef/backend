@@ -16,7 +16,7 @@ export class EditRecetteDto {
     servings: string;
 
     @IsNotEmpty()
-    cuisinesType: string;
+    mealType: string;
 
     @IsNotEmpty()
     instructions: string;

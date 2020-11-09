@@ -37,6 +37,6 @@ export class RecetteController {
     @Param('id', ParseIntPipe) recetteId: number,
   ): Promise<void>{
     return this.recetteService.remove(recetteId);
-  }
+  }  
 
 }

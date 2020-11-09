@@ -5,6 +5,6 @@ export class CreateIngredientDto {
     nom: string;
 
     @IsNotEmpty()
-    uniteMesure: string;;
+    uniteMesure: string;
 
 }

@@ -15,7 +15,7 @@ export class CreateRecetteDto {
     servings: string;
 
     @IsNotEmpty()
-    cuisinesType: string;
+    mealType: string;
 
     @IsNotEmpty()
     instructions: string;
