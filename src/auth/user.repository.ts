@@ -164,8 +164,8 @@ export class UserRepository extends Repository<User> {
   }
 
   async addToDoRecipes(user:User, recipeId:number):Promise<Recette[]>{
-    const getUser = await this.findOne({where: {id: user.id}});
-    getUser.toDoRecipes += { id: recipeId } as any;
+    const getUser = await this.findOne({relations: ["toDoRecipes"],where: {id: user.id}});
+    getUser.toDoRecipes.push({ id: recipeId } as any);
 
     try{
       getUser.save()
@@ -179,7 +179,7 @@ export class UserRepository extends Repository<User> {
   }
 
   async deleteToDoRecipes(user:User, recipeId:number):Promise<void>{
-    const getUser = await this.findOne({where: {id: user.id}});
+    const getUser = await this.findOne({relations: ["toDoRecipes"],where: {id: user.id}});
     const deletedRecipeIndex = getUser.toDoRecipes.findIndex(
       toDoRecipe => toDoRecipe.id === recipeId
     );
@@ -197,8 +197,8 @@ export class UserRepository extends Repository<User> {
     }
 
     async addStarredRecipes(user:User, recipeId:number):Promise<Recette[]>{
-      const getUser = await this.findOne({where: {id: user.id}});
-      getUser.starredRecipes += { id: recipeId } as any;
+      const getUser = await this.findOne({relations: ["starredRecipes"],where: {id: user.id}});
+      getUser.starredRecipes.push({ id: recipeId } as any);
   
       try{
         getUser.save()
@@ -208,11 +208,12 @@ export class UserRepository extends Repository<User> {
         );
         throw new InternalServerErrorException(error);
         }
+        console.log(getUser);
         return getUser.starredRecipes;
     }
   
   async deleteStarredRecipes(user:User, recipeId:number):Promise<void>{
-    const getUser = await this.findOne({where: {id: user.id}});
+    const getUser = await this.findOne({relations: ["starredRecipes"],where: {id: user.id}});
     const deletedRecipeIndex = getUser.starredRecipes.findIndex(
       toDoRecipe => toDoRecipe.id === recipeId
     );
@@ -230,9 +231,8 @@ export class UserRepository extends Repository<User> {
     }
 
     async addDoneRecipes(user:User, recipeId:number):Promise<Recette[]>{
-      const getUser = await this.findOne({where: {id: user.id}});
-      getUser.doneRecipes += { id: recipeId } as any;
-  
+      const getUser = await this.findOne({relations: ["doneRecipes"],where: {id: user.id}});
+      getUser.doneRecipes.push({ id: recipeId } as any);
       try{
         getUser.save()
       } catch (error) {
@@ -245,7 +245,7 @@ export class UserRepository extends Repository<User> {
     }
     
   async deleteDoneRecipes(user:User, recipeId:number):Promise<void>{
-    const getUser = await this.findOne({where: {id: user.id}});
+    const getUser = await this.findOne({relations: ["doneRecipes"],where: {id: user.id}});
     const deletedRecipeIndex = getUser.doneRecipes.findIndex(
       toDoRecipe => toDoRecipe.id === recipeId
     );
