@@ -28,8 +28,8 @@ export class Recette extends BaseEntity {
     @Column()
     servings: string;
 
-    @Column()
-    category: string;
+    @Column("text",{array: true})
+    category: string[];
 
     @Column()
     dishTypes: string;
@@ -54,7 +54,7 @@ export class Recette extends BaseEntity {
     @Column()
     photopath: string;
 
-    @Column()
+    @Column("text",{array: true})
     diets: string[];
 
 }

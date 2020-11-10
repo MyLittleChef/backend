@@ -18,12 +18,18 @@ export class RecetteRepository extends Repository<Recette> {
         recette.externalId = externalId;
         recette.difficulty = difficulty;
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-        recette.diets = diets;
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = photopath;
         recette.servings = servings;
-        recette.dishTypes = dishTypes;
-        recette.category = category;
+        if(category){
+          recette.category = category
+        }
+        if(dishTypes){
+          recette.dishTypes = dishTypes;
+        }
+        if(diets){
+          recette.diets = diets;
+        }
         recette.instructions = instructions;
         recette.materialNeeded = materialNeeded;
         recette.personsNumber = personsNumber;
@@ -53,16 +59,21 @@ export class RecetteRepository extends Repository<Recette> {
           recette.externalId = externalId;
           recette.difficulty = difficulty;
           recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-          recette.diets = diets;
           recette.readyInMinutes = readyInMinutes;
           recette.photopath = photopath;
           recette.servings = servings;
-          recette.dishTypes = dishTypes;
-          recette.category = category;
           recette.instructions = instructions;
           recette.materialNeeded = materialNeeded;
           recette.personsNumber = personsNumber;
-
+          if(category){
+            recette.category = category
+          }
+          if(dishTypes){
+            recette.dishTypes = dishTypes;
+          }
+          if(diets){
+            recette.diets = diets;
+          }
             try {
                 await recette.save();
               } catch (error) {
