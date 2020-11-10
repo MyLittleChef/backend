@@ -15,7 +15,10 @@ export class CreateRecetteDto {
     servings: string;
 
     @IsNotEmpty()
-    mealType: string;
+    category: string;
+
+    @IsNotEmpty()
+    dishTypes: string;
 
     @IsNotEmpty()
     instructions: string;
@@ -33,11 +36,9 @@ export class CreateRecetteDto {
     personsNumber: string;
 
     @IsNotEmpty()
-    regime: Regime;
+    diets: string[];
 
     @IsNotEmpty()
     photopath: string;
 
-    @IsNotEmpty()
-    metaInformation: string;
 }

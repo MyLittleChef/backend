@@ -29,7 +29,10 @@ export class Recette extends BaseEntity {
     servings: string;
 
     @Column()
-    mealType: string;
+    category: string;
+
+    @Column()
+    dishTypes: string;
 
     @Column()
     instructions: string;
@@ -52,9 +55,6 @@ export class Recette extends BaseEntity {
     photopath: string;
 
     @Column()
-    regime: Regime;
-
-    @Column()
-    metaInformation: string;
+    diets: string[];
 
 }

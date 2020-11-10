@@ -12,21 +12,21 @@ import { EditRecetteDto } from './dto/edit-recette.dto';
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     async createRecette(createRecetteDto: CreateRecetteDto): Promise<Recette> {
-      const { title, externalId, difficulty, ingredients, readyInMinutes, regime, photopath, servings, mealType, instructions, materialNeeded, personsNumber, metaInformation  } = createRecetteDto;
+      const { title, externalId, difficulty, ingredients, readyInMinutes, diets, photopath, servings, dishTypes, category, instructions, materialNeeded, personsNumber  } = createRecetteDto;
       const recette = this.create();
         recette.title = title;
         recette.externalId = externalId;
         recette.difficulty = difficulty;
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-        recette.regime = regime;
+        recette.diets = diets;
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = photopath;
         recette.servings = servings;
-        recette.mealType = mealType;
+        recette.dishTypes = dishTypes;
+        recette.category = category;
         recette.instructions = instructions;
         recette.materialNeeded = materialNeeded;
         recette.personsNumber = personsNumber;
-        recette.metaInformation = metaInformation;
         
         try {
             await recette.save();
@@ -44,7 +44,7 @@ export class RecetteRepository extends Repository<Recette> {
         return recette;
     }
     async editRecette(recetteId: number,editRecetteDto: EditRecetteDto): Promise<Recette> {
-        const { title, externalId, difficulty, ingredients, readyInMinutes, regime, photopath, servings, mealType, instructions, materialNeeded, personsNumber, metaInformation  } = editRecetteDto;
+        const { title, externalId, difficulty, ingredients, readyInMinutes, diets, photopath, servings, dishTypes, category, instructions, materialNeeded, personsNumber  } = editRecetteDto;
         const recette = await this.findOne({
             id: recetteId,
           });
@@ -53,15 +53,15 @@ export class RecetteRepository extends Repository<Recette> {
           recette.externalId = externalId;
           recette.difficulty = difficulty;
           recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-          recette.regime = regime;
+          recette.diets = diets;
           recette.readyInMinutes = readyInMinutes;
           recette.photopath = photopath;
           recette.servings = servings;
-          recette.mealType = mealType;
+          recette.dishTypes = dishTypes;
+          recette.category = category;
           recette.instructions = instructions;
           recette.materialNeeded = materialNeeded;
           recette.personsNumber = personsNumber;
-          recette.metaInformation = metaInformation;
 
             try {
                 await recette.save();
