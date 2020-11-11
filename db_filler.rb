@@ -32,42 +32,6 @@ def post_request(url:, request_body:)
   response.read_body
 end
 
-def post_recipes(url:, recipes:)
-  JSON(recipes)['recipes'].each do |recipe|
-    recipe_hash = Hash.new
-    recipe_hash['title'] = recipe['title']
-    recipe_hash['externalId'] = recipe['id']
-    recipe_hash['readyInMinutes'] = recipe['readyInMinutes']
-    recipe_hash['servings'] = recipe['servings']
-    recipe_hash['category'] = recipe['cuisines']
-    recipe_hash['dishTypes'] = recipe['dishTypes']
-    recipe_hash['instructions'] = ''
-    recipe_hash['materialNeeded'] = []
-    recipe['analyzedInstructions']&.each do |analyzedInstruction|
-      analyzedInstruction&.dig('steps')&.each do |step|
-        recipe_hash['instructions'] << "#{step['number']} #{step['step']}\n"
-        step.dig('equipment')&.each do |equipment|
-          recipe_hash['materialNeeded'] << equipment.dig('localizedName')
-        end
-      end
-    end
-
-    recipe_hash['ingredients'] = []
-    recipe['extendedIngredients']&.each do |ingredient|
-      ingredient_hash = Hash.new
-      ingredient_hash['nom'] = ingredient['name']
-      ingredient_hash['uniteMesure'] = ingredient['unit']
-      request_body = URI.encode_www_form(ingredient_hash)
-      posted_ingredient = post_request(url: "#{url}/ingredients", request_body: request_body)
-      recipe_hash['ingredients'] << JSON(posted_ingredient)['id']
-    end
-    recipe_hash['diets'] = recipe['diets']
-    recipe_hash['photopath'] = recipe['image']
-    request_body = URI.encode_www_form(recipe_hash)
-    post_request(url: "#{url}/recettes", request_body: request_body)
-  end
-end
-
 def post_recipe(url:, recipe:)
   recipe = JSON.parse(recipe)
   recipe_hash = Hash.new
