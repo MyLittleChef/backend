@@ -20,19 +20,19 @@ export class CreateRecetteDto {
     @IsOptional()
     dishTypes: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     instructions: string;
 
     @IsNotEmpty()
     materialNeeded: string;
-        
-    @IsNotEmpty()
+
+    @IsOptional()
     difficulty: Difficulty;
 
     @IsNotEmpty()
     ingredients: string[]
-    
-    @IsNotEmpty()
+
+    @IsOptional()
     personsNumber: string;
 
     @IsOptional()
