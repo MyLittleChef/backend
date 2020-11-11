@@ -23,7 +23,7 @@ export class CreateRecetteDto {
     @IsOptional()
     instructions: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     materialNeeded: string;
 
     @IsOptional()

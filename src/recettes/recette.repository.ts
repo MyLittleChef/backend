@@ -1,6 +1,7 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
+import { Difficulty } from './entities/difficulty.enum';
 import {
     ConflictException,
     InternalServerErrorException,
@@ -26,22 +27,12 @@ export class RecetteRepository extends Repository<Recette> {
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = photopath;
         recette.servings = servings;
-        if(category){
-          category = getArrayFromStringIfNeeded(category);
-          recette.category = category;
-        }
-        if(dishTypes){
-          recette.dishTypes = dishTypes;
-        }
-        if(diets){
-          diets = getArrayFromStringIfNeeded(diets);
-          recette.diets = diets;
-        }
-        if(difficulty){
-          recette.difficulty = difficulty;
-        }
-        recette.instructions = instructions;
-        recette.materialNeeded = materialNeeded;
+        recette.category = instructions ? getArrayFromStringIfNeeded(category) : [];
+        recette.dishTypes = dishTypes ? dishTypes : "";
+        recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
+        recette.difficulty = difficulty ? difficulty : Difficulty.VOID;
+        recette.instructions = instructions ? instructions : "";
+        recette.materialNeeded = materialNeeded ? materialNeeded : "";
 
         try {
             await recette.save();
