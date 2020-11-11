@@ -19,15 +19,15 @@ export class RecetteRepository extends Repository<Recette> {
         recette.title = title;
         recette.externalId = externalId;
         recette.difficulty = difficulty;
-        const getArrayFromStringIfNeeded = function(input) {
-          return Array.isArray(input) == false ? new Array(ingredients.toString()) : input;
+        let getArrayFromStringIfNeeded = function(input) {
+          return Array.isArray(input) == false ? new Array(input.toString()) : input;
         };
         ingredients = getArrayFromStringIfNeeded(ingredients)
         recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = photopath;
         recette.servings = servings;
-        recette.category = instructions ? getArrayFromStringIfNeeded(category) : [];
+        recette.category = category ? getArrayFromStringIfNeeded(category) : [];
         recette.dishTypes = dishTypes ? dishTypes : "";
         recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
         recette.difficulty = difficulty ? difficulty : Difficulty.VOID;

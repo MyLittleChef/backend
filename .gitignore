@@ -40,3 +40,4 @@ lerna-debug.log*
 *.png
 *.jpg
 *.jpeg
+db_filler.yml
