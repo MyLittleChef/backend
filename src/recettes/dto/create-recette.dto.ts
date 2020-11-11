@@ -33,9 +33,6 @@ export class CreateRecetteDto {
     ingredients: string[]
 
     @IsOptional()
-    personsNumber: string;
-
-    @IsOptional()
     diets: string[];
 
     @IsNotEmpty()

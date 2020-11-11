@@ -12,12 +12,13 @@ import { EditRecetteDto } from './dto/edit-recette.dto';
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     async createRecette(createRecetteDto: CreateRecetteDto): Promise<Recette> {
-      let { title, externalId, difficulty, ingredients, readyInMinutes, diets, photopath, servings, dishTypes, category, instructions, materialNeeded, personsNumber  } = createRecetteDto;
+      const { title, externalId, difficulty, readyInMinutes, photopath, servings, dishTypes, instructions, materialNeeded } = createRecetteDto;
+      let { ingredients, category, diets} = createRecetteDto;
       const recette = this.create();
         recette.title = title;
         recette.externalId = externalId;
         recette.difficulty = difficulty;
-        let getArrayFromStringIfNeeded = function(input) {
+        const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(ingredients.toString()) : input;
         };
         ingredients = getArrayFromStringIfNeeded(ingredients)
@@ -41,7 +42,6 @@ export class RecetteRepository extends Repository<Recette> {
         }
         recette.instructions = instructions;
         recette.materialNeeded = materialNeeded;
-        recette.personsNumber = personsNumber;
 
         try {
             await recette.save();
@@ -59,43 +59,55 @@ export class RecetteRepository extends Repository<Recette> {
         return recette;
     }
     async editRecette(recetteId: number,editRecetteDto: EditRecetteDto): Promise<Recette> {
-        const { title, externalId, difficulty, ingredients, readyInMinutes, diets, photopath, servings, dishTypes, category, instructions, materialNeeded, personsNumber  } = editRecetteDto;
-        const recette = await this.findOne({
-            id: recetteId,
-          });
-        if(recette){
-          recette.title = title;
-          recette.externalId = externalId;
-          recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
-          recette.readyInMinutes = readyInMinutes;
-          recette.photopath = photopath;
-          recette.servings = servings;
-          recette.instructions = instructions;
-          recette.materialNeeded = materialNeeded;
-          recette.personsNumber = personsNumber;
-          if(category){
-            recette.category = category
+      const { title, externalId, difficulty, readyInMinutes, photopath, servings, dishTypes, instructions, materialNeeded } = editRecetteDto;
+      let { ingredients, category, diets} = editRecetteDto;
+      const recette = await this.findOne({
+        id: recetteId,
+      });
+    if(recette){
+        recette.title = title;
+        recette.externalId = externalId;
+        recette.difficulty = difficulty;
+        const getArrayFromStringIfNeeded = function(input) {
+          return Array.isArray(input) == false ? new Array(ingredients.toString()) : input;
+        };
+        ingredients = getArrayFromStringIfNeeded(ingredients)
+        recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
+        recette.readyInMinutes = readyInMinutes;
+        recette.photopath = photopath;
+        recette.servings = servings;
+        if(category){
+          category = getArrayFromStringIfNeeded(category);
+          recette.category = category;
+        }
+        if(dishTypes){
+          recette.dishTypes = dishTypes;
+        }
+        if(diets){
+          diets = getArrayFromStringIfNeeded(diets);
+          recette.diets = diets;
+        }
+        if(difficulty){
+          recette.difficulty = difficulty;
+        }
+        recette.instructions = instructions;
+        recette.materialNeeded = materialNeeded;
+
+        try {
+            await recette.save();
+        } catch (error) {
+            if (error.code === 23505) {
+              //Duplicate name
+              throw new ConflictException('Recipe name already exists');
+            } else {
+              this.logger.verbose(
+                `Problem while saving the Recette: ${recette.title}, error is : ${error} !`,
+              );
+              throw new InternalServerErrorException(error);
+            }
           }
-          if(dishTypes){
-            recette.dishTypes = dishTypes;
-          }
-          if(diets){
-            recette.diets = diets;
-          }
-          if(difficulty){
-            recette.difficulty = difficulty;
-          }
-            try {
-                await recette.save();
-              } catch (error) {
-                this.logger.error(
-                  `Failed to edit a recette Data: ${JSON.stringify(editRecetteDto)}`,
-                  error.stack,
-                );
-                throw new InternalServerErrorException();
-              }
         } else {
-              throw new NotFoundException('Edited Recette does not exist');
+          throw new NotFoundException();
         }
         return recette;
      }

@@ -49,9 +49,6 @@ export class Recette extends BaseEntity {
     ingredients: Ingredient[];
 
     @Column()
-    personsNumber: string;
-
-    @Column()
     photopath: string;
 
     @Column("text",{array: true})
