@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { Regime } from "../entities/regime.enum";
 import { Difficulty } from '../entities/difficulty.enum';
 export class CreateRecetteDto {
@@ -14,30 +14,28 @@ export class CreateRecetteDto {
     @IsNotEmpty()
     servings: string;
 
-    @IsNotEmpty()
-    mealType: string;
+    @IsOptional()
+    category: string[];
 
-    @IsNotEmpty()
+    @IsOptional()
+    dishTypes: string;
+
+    @IsOptional()
     instructions: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     materialNeeded: string;
-        
-    @IsNotEmpty()
+
+    @IsOptional()
     difficulty: Difficulty;
 
     @IsNotEmpty()
     ingredients: string[]
-    
-    @IsNotEmpty()
-    personsNumber: string;
 
-    @IsNotEmpty()
-    regime: Regime;
+    @IsOptional()
+    diets: string[];
 
     @IsNotEmpty()
     photopath: string;
 
-    @IsNotEmpty()
-    metaInformation: string;
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, UsePipes, ValidationP
 import { IngredientService } from './ingredient.service';
 import { Ingredient } from './entities/ingredient.entity';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
-@Controller('ingredient')
+@Controller('ingredients')
 export class IngredientController {
   constructor(private ingredientService: IngredientService,
     ) {}

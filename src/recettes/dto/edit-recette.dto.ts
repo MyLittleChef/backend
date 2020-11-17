@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { Difficulty } from "../entities/difficulty.enum";
 import { Regime } from "../entities/regime.enum";
 
@@ -15,8 +15,11 @@ export class EditRecetteDto {
     @IsNotEmpty()
     servings: string;
 
-    @IsNotEmpty()
-    mealType: string;
+    @IsOptional()
+    category: string[];
+
+    @IsOptional()
+    dishTypes: string;
 
     @IsNotEmpty()
     instructions: string;
@@ -29,16 +32,11 @@ export class EditRecetteDto {
 
     @IsNotEmpty()
     ingredients: string[]
-    
-    @IsNotEmpty()
-    personsNumber: string;
 
-    @IsNotEmpty()
-    regime: Regime;
+    @IsOptional()
+    diets: string[];
 
     @IsNotEmpty()
     photopath: string;
 
-    @IsNotEmpty()
-    metaInformation: string;
 }

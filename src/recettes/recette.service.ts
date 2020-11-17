@@ -11,15 +11,15 @@ export class RecetteService {
     private recetteRepository: RecetteRepository,
   ) {}
   private logger = new Logger('RecetteService');
-  
+
   create(createRecetteDto: CreateRecetteDto): Promise<Recette> {
     return this.recetteRepository.createRecette(createRecetteDto);
   }
   get(recetteId: number): Promise<Recette> {
-    return  this.recetteRepository.findOne({
-      where: { id: recetteId },
-    });
-  }
+     return  this.recetteRepository.findOne({
+       relations: ["ingredients"],where: { id: recetteId },
+     });
+   } 
   edit(recetteId: number, editRecetteDto: EditRecetteDto): Promise<Recette> {
     return this.recetteRepository.editRecette(recetteId, editRecetteDto);
   }

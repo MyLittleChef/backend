@@ -1,18 +1,20 @@
 import {
-    BaseEntity,
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
+   BaseEntity,
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   Unique,
 } from 'typeorm';
 @Entity()
+@Unique(['nom','uniteMesure'])
 export class Ingredient extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+   @PrimaryGeneratedColumn()
+   id: number;
 
-    @Column()
-    nom: string;
+   @Column()
+   nom: string;
 
-    @Column()
-    uniteMesure: string;
+   @Column()
+   uniteMesure: string;
 
 }
