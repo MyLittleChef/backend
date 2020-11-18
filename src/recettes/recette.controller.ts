@@ -41,7 +41,7 @@ export class RecetteController {
   ): Promise<void>{
     return this.recetteService.remove(recetteId);
   }  
-  @Get(':imgpath')
+  @Get('/image/:imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './files' });
   }
