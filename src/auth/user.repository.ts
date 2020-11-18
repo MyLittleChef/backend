@@ -262,6 +262,40 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
+    async addSuggestedRecipes(user:User, recipeId:number):Promise<Recette[]>{
+      const getUser = await this.findOne({relations: ["suggestedRecipes"],where: {id: user.id}});
+      getUser.suggestedRecipes.push({ id: recipeId } as any);
+  
+      try{
+        getUser.save()
+      } catch (error) {
+        this.logger.verbose(
+          `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
+        );
+        throw new InternalServerErrorException(error);
+        }
+        console.log(getUser);
+        return getUser.suggestedRecipes;
+    }
+  
+  async deleteSuggestedRecipes(user:User, recipeId:number):Promise<void>{
+    const getUser = await this.findOne({relations: ["suggestedRecipes"],where: {id: user.id}});
+    const deletedRecipeIndex = getUser.suggestedRecipes.findIndex(
+      suggestedRecipes => suggestedRecipes.id === recipeId
+    );
+    getUser.suggestedRecipes.splice(deletedRecipeIndex, 1);
+    
+    try {
+      getUser.save();
+    } catch (error) {
+      this.logger.verbose(
+        `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
+      );
+      throw new InternalServerErrorException(error);
+      }
+      return;
+    }
+
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }

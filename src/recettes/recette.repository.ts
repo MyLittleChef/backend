@@ -11,11 +11,11 @@ import {
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     async createRecette(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
-      const { title, externalId, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded } = createRecetteDto;
+      const { title, providerId, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded } = createRecetteDto;
       let { ingredients, category, diets} = createRecetteDto;
       const recette = this.create();
         recette.title = title;
-        recette.externalId = externalId;
+        recette.providerId = {id: providerId} as any;
         recette.difficulty = difficulty;
         const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(input.toString()) : input;

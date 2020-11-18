@@ -97,4 +97,15 @@ export class AuthService {
     return this.userRepository.deleteDoneRecipes(user, recipeId);
   }
 
+  async getSuggestedRecipes(user:User):Promise<Recette[]>{
+    const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
+    return getUser.doneRecipes;
+  }
+  async addSuggestedRecipes(user:User, recipeId:number):Promise<Recette[]>{
+    return this.userRepository.addSuggestedRecipes(user, recipeId);
+  }
+  async deleteSuggestedRecipes(user:User, recipeId: number): Promise<void> {
+    return this.userRepository.deleteSuggestedRecipes(user, recipeId);
+  }
+
 }

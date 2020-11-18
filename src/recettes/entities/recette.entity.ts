@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Difficulty } from './difficulty.enum';
 import { Ingredient } from './ingredient.entity';
-import { Regime } from './regime.enum';
+import { Provider } from './provider.entity';
 @Entity()
 @Unique(['externalId'])
 export class Recette extends BaseEntity {
@@ -20,7 +20,7 @@ export class Recette extends BaseEntity {
     title: string;
 
     @Column()
-    externalId: string;
+    providerId: Provider;
 
     @Column()
     readyInMinutes: string;

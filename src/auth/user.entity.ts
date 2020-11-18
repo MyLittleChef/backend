@@ -64,6 +64,12 @@ export class User extends BaseEntity {
   @JoinTable()
   doneRecipes: Recette[];
 
+  @ManyToMany(
+    () => Recette,
+  )
+  @JoinTable()
+  suggestedRecipes: Recette[];
+
   @ManyToMany(() => Ingredient)
   @JoinTable()
   shoppingList: Ingredient[]

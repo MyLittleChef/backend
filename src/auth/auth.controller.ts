@@ -100,6 +100,31 @@ export class AuthController {
     return this.authService.deleteStarredRecipes(user, id);
   }
 
+  @Get('/suggestedRecipes')
+  @UseGuards(AuthGuard())
+  getSuggestedRecipes(
+    @GetUser() user:User
+  ): Promise<Recette[]>{
+    return this.authService.getSuggestedRecipes(user);
+  }
+  @Post('/suggestedRecipes/:id')
+  @UseGuards(AuthGuard())
+  addSuggestedRecipes(
+    @GetUser() user:User,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Recette[]>{
+    return this.authService.addSuggestedRecipes(user,id);
+  }
+
+  @Delete('/suggestedRecipes/:id')
+  @UseGuards(AuthGuard())
+  deleteSuggestedRecipes(
+    @GetUser() user:User,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<void>{
+    return this.authService.deleteSuggestedRecipes(user, id);
+  }
+
   @Get('/toDoRecipes')
   @UseGuards(AuthGuard())
   getToDoRecipes(

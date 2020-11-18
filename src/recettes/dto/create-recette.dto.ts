@@ -5,7 +5,7 @@ export class CreateRecetteDto {
     title: string;
 
     @IsNotEmpty()
-    externalId: string;
+    providerId: string;
 
     @IsNotEmpty()
     readyInMinutes: string;
