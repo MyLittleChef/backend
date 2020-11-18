@@ -5,6 +5,7 @@ import {
   ConflictException,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -279,7 +280,11 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
-    toRecalculateFalse(user:User):Promise<void>{
+    async toRecalculateFalse(userId:number):Promise<void>{
+      const user = await this.findOne({where: {id: userId}});
+      if(!user) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
       user.toRecalculate = false;
       try {
         user.save();

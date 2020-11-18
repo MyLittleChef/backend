@@ -108,8 +108,8 @@ export class AuthService {
     return this.userRepository.deleteSuggestedRecipes(user, recipeId);
   }
 
-  async toRecalculateFalse(user: User):Promise<void>{
-    return this.userRepository.toRecalculateFalse(user);
+  async toRecalculateFalse(userId: number):Promise<void>{
+    return this.userRepository.toRecalculateFalse(userId);
   }
   async getToRecalculateUsers():Promise<User[]>{
     const users:User[] = await this.userRepository.find({where: {toRecalculate: true}});

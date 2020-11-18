@@ -199,12 +199,11 @@ export class AuthController {
     return this.authService.getToRecalculateUsers();
   }
 
-  @Post('/calculated')
-  @UseGuards(AuthGuard())
+  @Post('/calculated/:id')
   toRecalculateFalse(
-    @GetUser() user:User,
+    @Param('id', ParseIntPipe) userId:number
   ):Promise<void>{
-    return this.authService.toRecalculateFalse(user);
+    return this.authService.toRecalculateFalse(userId);
   }
 
 }
