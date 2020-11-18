@@ -39,6 +39,7 @@ export class Recette extends BaseEntity {
 
     @Column()
     materialNeeded: string;
+    
     @Column()
     difficulty: Difficulty;
 
