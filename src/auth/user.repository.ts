@@ -11,9 +11,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
-import { Regime } from 'src/recettes/entities/regime.enum';
 import { CookingFrequence } from './entity/cookingFrequence.enum';
 import { Recette } from 'src/recettes/entities/recette.entity';
+import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
@@ -21,7 +21,9 @@ export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
   async signUp(createUserDto: CreateUserDto): Promise<void> {
     const { username, password, allergies, diets, cookingFrequence } = createUserDto;
-
+    const getArrayFromStringIfNeeded = function(input) {
+      return Array.isArray(input) == false ? new Array(input.toString()) : input;
+    };
     const user = this.create();
     user.username = username;
     user.salt = await bcrypt.genSalt();
@@ -30,23 +32,9 @@ export class UserRepository extends Repository<User> {
     user.resetPasswordToken = '';
     user.resetPasswordExpires = '';
 
-    if (allergies) {
-      user.allergies = allergies.map(ingredientId => ({ id: ingredientId } as any));
-    } else {
-      user.allergies = null;
-    }
-
-    if(diets){
-      user.diets = diets;
-    } else {
-      user.diets = Regime.STANDART; 
-    }
-
-    if(cookingFrequence){
-      user.cookingFrequence = cookingFrequence;
-    } else {
-      user.cookingFrequence = CookingFrequence.CASUAL;
-    }
+    user.allergies = allergies ? getArrayFromStringIfNeeded(allergies) : [];
+    user.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
+    user.cookingFrequence = cookingFrequence ? cookingFrequence:CookingFrequence.CASUAL;
 
     try {
       await user.save();
@@ -121,35 +109,25 @@ export class UserRepository extends Repository<User> {
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {
     const { username, diets, password, allergies, cookingFrequence, toDoRecipes, starredRecipes, doneRecipes, shoppingList } = editUserDto;
+    const getArrayFromStringIfNeeded = function(input) {
+      return Array.isArray(input) == false ? new Array(input.toString()) : input;
+    };
     if (username) {
       user.username = username;
-    }
+    } 
+    username ? user.username=username : void 0;
     if (password) {
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPassword(password, user.salt);
     }
-    if (diets) {
-      user.diets = diets;
-    }
-    if (allergies) {
-      user.allergies = allergies.map(ingredientId => ({ id: ingredientId } as any));
-    }
-    if (shoppingList) {
-      user.shoppingList = shoppingList.map(ingredientId => ({ id: ingredientId } as any));
-    }
-
-    if (cookingFrequence) {
-      user.cookingFrequence = cookingFrequence;
-    }
-    if (toDoRecipes) {
-      user.toDoRecipes = toDoRecipes.map(recipeId => ({ id: recipeId } as any));
-    }
-    if (starredRecipes) {
-      user.starredRecipes = starredRecipes.map(recipeId => ({ id: recipeId } as any));
-    }
-    if (doneRecipes) {
-      user.doneRecipes = doneRecipes.map(recipeId => ({ id: recipeId } as any));
-    }
+    diets ? user.diets=getArrayFromStringIfNeeded(diets) : void 0;
+    allergies ? user.allergies=getArrayFromStringIfNeeded(allergies) : void 0;
+    shoppingList ? user.shoppingList=shoppingList.map(ingredientId => ({ id: ingredientId } as any)) : void 0;
+    cookingFrequence ? user.cookingFrequence=cookingFrequence : void 0;
+    toDoRecipes ? user.toDoRecipes = toDoRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
+    starredRecipes ? user.starredRecipes = starredRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
+    doneRecipes ? user.doneRecipes = doneRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
+    
     try {
       await user.save();
     } catch (error) {

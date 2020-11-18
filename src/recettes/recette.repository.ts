@@ -15,7 +15,7 @@ export class RecetteRepository extends Repository<Recette> {
       let { ingredients, category, diets} = createRecetteDto;
       const recette = this.create();
         recette.title = title;
-        recette.providerId = {id: providerId} as any;
+        recette.provider = {id: providerId} as any;
         recette.difficulty = difficulty;
         const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(input.toString()) : input;

@@ -6,5 +6,5 @@ export class Provider extends BaseEntity {
     id:string;
     
     @Column()
-    nom: string;
+    name: string;
 }

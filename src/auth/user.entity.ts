@@ -11,7 +11,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import { Ingredient } from 'src/recettes/entities/ingredient.entity';
-import { Regime } from 'src/recettes/entities/regime.enum';
 import { NotEquals } from 'class-validator';
 import { Mark } from './entity/mark.entity';
 
@@ -25,7 +24,7 @@ export class User extends BaseEntity {
   username: string;
 
   @Column()
-  diets: Regime;
+  diets: string;
 
   @ManyToMany(() => Ingredient)
   @JoinTable()

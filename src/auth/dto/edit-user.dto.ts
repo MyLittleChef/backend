@@ -5,7 +5,6 @@ import {
   Matches,
   IsOptional,
 } from 'class-validator';
-import { Regime } from 'src/recettes/entities/regime.enum';
 import { CookingFrequence } from '../entity/cookingFrequence.enum';
 
 export class EditUserDto {
@@ -20,8 +19,7 @@ export class EditUserDto {
   username: string;
 
   @IsOptional()
-  @IsString()
-  diets: Regime;
+  diets: string[];
 
   @IsOptional()
   allergies: string[];
