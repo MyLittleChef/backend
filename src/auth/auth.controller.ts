@@ -187,11 +187,24 @@ export class AuthController {
 
   @Post('/mark')
   @UseGuards(AuthGuard())
-
   createMark(
     @GetUser() user:User,
     @Body(ValidationPipe) createMarkDto: CreateMarkDto,
   ): Promise<Mark>{
     return this.markService.createMark(user,createMarkDto);
   }
+
+  @Get('/toRecalculate')
+  getToRecalculateUsers():Promise<User[]>{
+    return this.authService.getToRecalculateUsers();
+  }
+
+  @Post('/calculated')
+  @UseGuards(AuthGuard())
+  toRecalculateFalse(
+    @GetUser() user:User,
+  ):Promise<void>{
+    return this.authService.toRecalculateFalse(user);
+  }
+
 }

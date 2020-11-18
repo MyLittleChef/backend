@@ -76,6 +76,9 @@ export class User extends BaseEntity {
   @OneToMany(type => Mark, mark => mark.user, { eager: true })
   marks: Mark[]
 
+  @Column()
+  toRecalculate: boolean;
+
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
     return hash === this.password;

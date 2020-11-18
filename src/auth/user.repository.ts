@@ -36,6 +36,7 @@ export class UserRepository extends Repository<User> {
     user.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
     user.cookingFrequence = cookingFrequence ? cookingFrequence:CookingFrequence.CASUAL;
 
+    user.toRecalculate = true;
     try {
       await user.save();
     } catch (error) {
@@ -120,6 +121,7 @@ export class UserRepository extends Repository<User> {
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPassword(password, user.salt);
     }
+    user.toRecalculate = true;
     diets ? user.diets=getArrayFromStringIfNeeded(diets) : void 0;
     allergies ? user.allergies=getArrayFromStringIfNeeded(allergies) : void 0;
     shoppingList ? user.shoppingList=shoppingList.map(ingredientId => ({ id: ingredientId } as any)) : void 0;
@@ -144,7 +146,7 @@ export class UserRepository extends Repository<User> {
   async addToDoRecipes(user:User, recipeId:number):Promise<Recette[]>{
     const getUser = await this.findOne({relations: ["toDoRecipes"],where: {id: user.id}});
     getUser.toDoRecipes.push({ id: recipeId } as any);
-
+    getUser.toRecalculate = true;
     try{
       getUser.save()
     } catch (error) {
@@ -162,7 +164,7 @@ export class UserRepository extends Repository<User> {
       toDoRecipe => toDoRecipe.id === recipeId
     );
     getUser.toDoRecipes.splice(deletedRecipeIndex, 1);
-    
+    getUser.toRecalculate = true;
     try {
       getUser.save();
     } catch (error) {
@@ -177,7 +179,7 @@ export class UserRepository extends Repository<User> {
     async addStarredRecipes(user:User, recipeId:number):Promise<Recette[]>{
       const getUser = await this.findOne({relations: ["starredRecipes"],where: {id: user.id}});
       getUser.starredRecipes.push({ id: recipeId } as any);
-  
+      getUser.toRecalculate = true;
       try{
         getUser.save()
       } catch (error) {
@@ -196,7 +198,7 @@ export class UserRepository extends Repository<User> {
       toDoRecipe => toDoRecipe.id === recipeId
     );
     getUser.starredRecipes.splice(deletedRecipeIndex, 1);
-    
+    getUser.toRecalculate = true;
     try {
       getUser.save();
     } catch (error) {
@@ -211,6 +213,7 @@ export class UserRepository extends Repository<User> {
     async addDoneRecipes(user:User, recipeId:number):Promise<Recette[]>{
       const getUser = await this.findOne({relations: ["doneRecipes"],where: {id: user.id}});
       getUser.doneRecipes.push({ id: recipeId } as any);
+      getUser.toRecalculate = true;
       try{
         getUser.save()
       } catch (error) {
@@ -227,6 +230,7 @@ export class UserRepository extends Repository<User> {
     const deletedRecipeIndex = getUser.doneRecipes.findIndex(
       toDoRecipe => toDoRecipe.id === recipeId
     );
+    getUser.toRecalculate = true;
     getUser.doneRecipes.splice(deletedRecipeIndex, 1);
     
     try {
@@ -243,7 +247,7 @@ export class UserRepository extends Repository<User> {
     async addSuggestedRecipes(user:User, recipeId:number):Promise<Recette[]>{
       const getUser = await this.findOne({relations: ["suggestedRecipes"],where: {id: user.id}});
       getUser.suggestedRecipes.push({ id: recipeId } as any);
-  
+      getUser.toRecalculate = true;
       try{
         getUser.save()
       } catch (error) {
@@ -261,6 +265,7 @@ export class UserRepository extends Repository<User> {
     const deletedRecipeIndex = getUser.suggestedRecipes.findIndex(
       suggestedRecipes => suggestedRecipes.id === recipeId
     );
+    getUser.toRecalculate = true;
     getUser.suggestedRecipes.splice(deletedRecipeIndex, 1);
     
     try {
@@ -274,6 +279,18 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
+    toRecalculateFalse(user:User):Promise<void>{
+      user.toRecalculate = false;
+      try {
+        user.save();
+      } catch (error){
+        this.logger.verbose(
+          `Problem while saving the User: ${user.id}, error is : ${error} !`,
+        );
+        throw new InternalServerErrorException(error);
+      }
+      return;
+    }
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }

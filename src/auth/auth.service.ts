@@ -108,4 +108,27 @@ export class AuthService {
     return this.userRepository.deleteSuggestedRecipes(user, recipeId);
   }
 
+  async toRecalculateFalse(user: User):Promise<void>{
+    return this.userRepository.toRecalculateFalse(user);
+  }
+  async getToRecalculateUsers():Promise<User[]>{
+    const users:User[] = await this.userRepository.find({where: {toRecalculate: true}});
+    users.map(user => {
+      delete user.password;
+      delete user.salt;
+      delete user.resetPasswordExpires;
+      delete user.allergies;
+      delete user.cookingFrequence;
+      delete user.diets;
+      delete user.doneRecipes;
+      delete user.marks;
+      delete user.shoppingList;
+      delete user.suggestedRecipes
+      delete user.toDoRecipes;
+      delete user.starredRecipes;
+      delete user.resetPasswordToken;
+    })
+    return users;
+  }
+
 }
