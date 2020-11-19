@@ -4,6 +4,8 @@ import { RecetteRepository } from './recette.repository';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
 import { unlink } from 'fs';
+import {GetRandomRecipesDto} from "./dto/get-random-recipes.dto";
+import {MoreThan} from "typeorm";
 
 @Injectable()
 export class RecetteService {
@@ -20,7 +22,14 @@ export class RecetteService {
      return  this.recetteRepository.findOne({
        relations: ["ingredients"],where: { id: recetteId },
      });
-   } 
+   }
+  getConsecutiveRecipes(getRandomRecipesDto: GetRandomRecipesDto): Promise<Recette[]>{
+    const { array_size, start } = getRandomRecipesDto;
+
+    return this.recetteRepository.find({
+      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(array_size)
+    });
+  }
   async remove(recetteId: number): Promise<void> {
     const recipe:Recette = await this.recetteRepository.findOne({where: {id:recetteId}});
     const result = await this.recetteRepository.delete({id: recetteId});

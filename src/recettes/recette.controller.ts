@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post,  UsePipes, Validation
 import { RecetteService } from './recette.service';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
+import { GetRandomRecipesDto } from './dto/get-random-recipes.dto';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -10,6 +11,13 @@ import { diskStorage } from 'multer';
 export class RecetteController {
   constructor(private recetteService: RecetteService,
     ) {}
+
+  @Get('/consecutive')
+  async getRandomRecipes(
+      @Body() GetRandomRecipesDto : GetRandomRecipesDto
+  ): Promise<Recette[]> {
+    return this.recetteService.getConsecutiveRecipes(GetRandomRecipesDto);
+  }
 
   @Get('/:id')
   async getRecette(
