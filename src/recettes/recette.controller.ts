@@ -18,7 +18,7 @@ export class RecetteController {
   ): Promise<Recette[]> {
     return this.recetteService.getConsecutiveRecipes(getConsecutiveRecipesDto);
   }
-  
+
   @Get('/:id')
   async getRecette(
   @Param('id', ParseIntPipe) recetteId:number): Promise<Recette> {

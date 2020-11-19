@@ -18,7 +18,7 @@ export class ShoppingListItemRepository extends Repository<ShoppingListItem> {
     try {
         await item.save();
     } catch(error){
-        if(error.code === 23505) {
+        if(error.code == 23505) {
             throw new ConflictException(`Ingredient already assigned for user ${user.username}`);
         } else {
             this.logger.verbose(
