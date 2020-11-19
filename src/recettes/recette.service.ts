@@ -19,7 +19,7 @@ export class RecetteService {
     return this.recetteRepository.createRecette(createRecetteDto, filename);
   }
   get(recetteId: number): Promise<Recette> {
-     return  this.recetteRepository.findOne({
+     return this.recetteRepository.findOne({
        relations: ["ingredients"],where: { id: recetteId },
      });
    } 
