@@ -9,6 +9,8 @@ import { JwtStrategy } from './jwt.strategy';
 import * as config from 'config';
 import { MarkService } from './mark.service';
 import { MarkRepository } from './mark.repository';
+import { ShoppingListItemRepository } from './shoppingList.repository';
+import { ShoppingListService } from './shoppingList.service';
 
 const jwtConfig = config.get('jwt');
 @Module({
@@ -22,12 +24,14 @@ const jwtConfig = config.get('jwt');
     }),
     TypeOrmModule.forFeature([UserRepository]),
     TypeOrmModule.forFeature([MarkRepository]),
+    TypeOrmModule.forFeature([ShoppingListItemRepository])
   ],
   controllers: [AuthController],
   providers: [
     JwtStrategy,
     AuthService,
-    MarkService
+    MarkService,
+    ShoppingListService
   ],
   exports: [
     JwtStrategy,

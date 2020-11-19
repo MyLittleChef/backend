@@ -1,0 +1,4 @@
+export enum Provider {
+    SPOONACULAR = 'SPOONACULAR',
+    OPENFOODFACTS = 'OPENFOODFACTS'
+}

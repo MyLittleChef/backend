@@ -7,13 +7,13 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import { Ingredient } from 'src/recettes/entities/ingredient.entity';
-import { NotEquals } from 'class-validator';
 import { Mark } from './entity/mark.entity';
-
+import { ShoppingListItem } from './entity/shoppingItem.entity';
 @Entity()
 @Unique(['username'])
 export class User extends BaseEntity {
@@ -69,9 +69,8 @@ export class User extends BaseEntity {
   @JoinTable()
   suggestedRecipes: Recette[];
 
-  @ManyToMany(() => Ingredient)
-  @JoinTable()
-  shoppingList: Ingredient[]
+  @OneToMany(type => ShoppingListItem, shoppingListItem => shoppingListItem.user, { eager: true})
+  shoppingList: ShoppingListItem[]
 
   @OneToMany(type => Mark, mark => mark.user, { eager: true })
   marks: Mark[]

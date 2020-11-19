@@ -23,11 +23,13 @@ import { Mark } from './entity/mark.entity';
 import { MarkService } from './mark.service';
 import { CreateMarkDto } from './dto/create-mark.dto';
 import { Recette } from 'src/recettes/entities/recette.entity';
-
+import { ShoppingListService } from './shoppingList.service';
+import { ShoppingListItem } from './entity/shoppingItem.entity';
+import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
 @Controller('user')
 export class AuthController {
   private logger = new Logger('AuthController');
-  constructor(private authService: AuthService, private markService:MarkService) {}
+  constructor(private authService: AuthService, private markService:MarkService, private shoppingListService:ShoppingListService) {}
 
   @Post('/signup')
   signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
@@ -204,6 +206,32 @@ export class AuthController {
     @Param('id', ParseIntPipe) userId:number
   ):Promise<void>{
     return this.authService.toRecalculateFalse(userId);
+  }
+
+  @Get('/shoppingList')
+  @UseGuards(AuthGuard())
+  getShoppingList(
+    @GetUser() user:User
+  ):Promise<ShoppingListItem[]>{
+    return this.shoppingListService.getShoppingList(user);
+  }
+
+  @Post('/shoppingList')
+  @UseGuards(AuthGuard())
+  addShoppingItem(
+    @GetUser() user:User,
+    @Body(ValidationPipe) createShoppingItemDto:CreateShoppingItemDto
+  ):Promise<ShoppingListItem>{
+    return this.shoppingListService.addItem(user, createShoppingItemDto);
+  }
+
+  @Delete('shoppingList/:id')
+  @UseGuards(AuthGuard())
+  deleteShoppingItem(
+    @GetUser() user:User,
+    @Param('id', ParseIntPipe) itemId:number
+  ):Promise<void>{
+    return this.shoppingListService.deleteItem(user, itemId);
   }
 
 }

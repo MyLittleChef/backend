@@ -8,7 +8,7 @@ import { User } from "./user.entity";
 export class MarkRepository extends Repository<Mark> {
   private logger = new Logger('MarkRepository');
 
-  async createMark(user:User, createMarkDto: CreateMarkDto){
+  async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     const { recipeId, score } = createMarkDto
     const mark = this.create();
     mark.user = user;

@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Difficulty } from './difficulty.enum';
 import { Ingredient } from './ingredient.entity';
-import { Provider } from './provider.entity';
+import { Provider } from './provider.enum';
 @Entity()
 @Unique(['provider','title'])
 export class Recette extends BaseEntity {
@@ -20,8 +20,7 @@ export class Recette extends BaseEntity {
     @Column()
     title: string;
 
-    @ManyToOne(type => Provider)
-    @JoinTable()
+    @Column()
     provider: Provider;
 
     @Column()

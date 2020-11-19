@@ -14,13 +14,13 @@ export class MarkService {
     private markRepository: MarkRepository,
   ) {}
 
-  getMark(id:number, user:User){
+  getMark(id:number, user:User):Promise<Mark>{
     return this.markRepository.findOne({
         where: { recipeId: id, user: user },
       });
   }
 
-  createMark(user:User, createMarkDto: CreateMarkDto){
+  createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     return this.markRepository.createMark(user, createMarkDto);
   }
 }

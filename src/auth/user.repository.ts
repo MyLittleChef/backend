@@ -125,11 +125,7 @@ export class UserRepository extends Repository<User> {
     user.toRecalculate = true;
     diets ? user.diets=getArrayFromStringIfNeeded(diets) : void 0;
     allergies ? user.allergies=getArrayFromStringIfNeeded(allergies) : void 0;
-    shoppingList ? user.shoppingList=shoppingList.map(ingredientId => ({ id: ingredientId } as any)) : void 0;
     cookingFrequence ? user.cookingFrequence=cookingFrequence : void 0;
-    toDoRecipes ? user.toDoRecipes = toDoRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
-    starredRecipes ? user.starredRecipes = starredRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
-    doneRecipes ? user.doneRecipes = doneRecipes.map(recipeId => ({ id: recipeId } as any)) : void 0;
     
     try {
       await user.save();
