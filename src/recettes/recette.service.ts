@@ -4,21 +4,29 @@ import { RecetteRepository } from './recette.repository';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
 import { unlink } from 'fs';
+import { IngredientQuantityRepository } from './ingredientquantity.repository';
+import { IngredientQuantity } from './entities/ingredientquantity.entity';
+import { CreateIngredientQuantityDto } from './dto/create-ingredientquantity.dto';
 
 @Injectable()
 export class RecetteService {
   constructor(
     @InjectRepository(RecetteRepository)
+    @InjectRepository(IngredientQuantityRepository)
     private recetteRepository: RecetteRepository,
+    private ingredientquantityRepository: IngredientQuantityRepository
   ) {}
   private logger = new Logger('RecetteService');
 
-  create(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
-    return this.recetteRepository.createRecette(createRecetteDto, filename);
+  async create(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
+   const ingredientquantities: IngredientQuantity[] = await Promise.all(createRecetteDto.ingredients.map((ingredient:CreateIngredientQuantityDto) => this.ingredientquantityRepository.addIngredientsQuantity(ingredient)));
+   console.log(ingredientquantities);
+   return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
   }
-  get(recetteId: number): Promise<Recette> {
-     return  this.recetteRepository.findOne({
-       relations: ["ingredients"],where: { id: recetteId },
+  async get(recetteId: number): Promise<Recette> {
+    console.log(await this.ingredientquantityRepository.find({relations: ["ingredient"], where:{id:4}}));
+    return  this.recetteRepository.findOne({
+       relations: ["ingredients","ingredients.ingredient"],where: { id: recetteId },
      });
    } 
   async remove(recetteId: number): Promise<void> {

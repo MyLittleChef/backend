@@ -14,7 +14,6 @@ import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
 import { CookingFrequence } from './entity/cookingFrequence.enum';
 import { Recette } from 'src/recettes/entities/recette.entity';
-import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
@@ -110,7 +109,7 @@ export class UserRepository extends Repository<User> {
     return user;
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {
-    const { username, diets, password, allergies, cookingFrequence, toDoRecipes, starredRecipes, doneRecipes, shoppingList } = editUserDto;
+    const { username, diets, password, allergies, cookingFrequence } = editUserDto;
     const getArrayFromStringIfNeeded = function(input) {
       return Array.isArray(input) == false ? new Array(input.toString()) : input;
     };

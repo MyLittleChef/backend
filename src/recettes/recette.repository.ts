@@ -7,11 +7,12 @@ import {
     InternalServerErrorException,
     Logger,
   } from '@nestjs/common';
+import { IngredientQuantity } from './entities/ingredientquantity.entity';
 @EntityRepository(Recette)
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
-    async createRecette(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
+    async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
       const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded } = createRecetteDto;
       let { ingredients, category, diets} = createRecetteDto;
       const recette = this.create();
@@ -21,8 +22,8 @@ export class RecetteRepository extends Repository<Recette> {
         const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(input.toString()) : input;
         };
-        ingredients = getArrayFromStringIfNeeded(ingredients)
-        recette.ingredients = ingredients.map(ingredientId => ({ id: ingredientId } as any));
+        ingredients = getArrayFromStringIfNeeded(ingredients);
+        recette.ingredients = ingredientquantities.map(ingredientquantity=> ({ id: ingredientquantity.id } as any));
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = filename;
         recette.servings = servings;

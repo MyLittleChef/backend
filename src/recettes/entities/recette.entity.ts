@@ -6,10 +6,11 @@ import {
     Column,
     ManyToMany,
     JoinTable,
-    ManyToOne,
+    OneToMany,
 } from 'typeorm';
 import { Difficulty } from './difficulty.enum';
 import { Ingredient } from './ingredient.entity';
+import { IngredientQuantity } from './ingredientquantity.entity';
 import { Provider } from './provider.enum';
 @Entity()
 @Unique(['provider','title'])
@@ -45,10 +46,10 @@ export class Recette extends BaseEntity {
     difficulty: Difficulty;
 
     @ManyToMany(
-      () => Ingredient,
+      () => IngredientQuantity,
     )
     @JoinTable()
-    ingredients: Ingredient[];
+    ingredients: IngredientQuantity[];
 
     @Column()
     photopath: string;

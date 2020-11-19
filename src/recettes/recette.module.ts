@@ -6,8 +6,12 @@ import { RecetteRepository } from './recette.repository'
 import { IngredientRepository } from './ingredient.repository';
 import { IngredientController } from './ingredient.controller';
 import { IngredientService } from './ingredient.service';
+import { IngredientQuantityRepository } from './ingredientquantity.repository';
 @Module({
-  imports: [TypeOrmModule.forFeature([RecetteRepository]), TypeOrmModule.forFeature([IngredientRepository])],
+  imports: [TypeOrmModule.forFeature([RecetteRepository]), 
+  TypeOrmModule.forFeature([IngredientRepository]),
+  TypeOrmModule.forFeature([IngredientQuantityRepository])],
+  
   controllers: [RecetteController, IngredientController],
   providers: [RecetteService, IngredientService],
 })

@@ -32,7 +32,7 @@ export class RecetteController {
     @Body() createRecetteDto: CreateRecetteDto,
     @UploadedFile() file,
   ): Promise<Recette> {
-    return this.recetteService.create(createRecetteDto, file.filename);
+      return this.recetteService.create(createRecetteDto, file.filename);
   }
 
   @Delete('/:id')
