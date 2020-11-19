@@ -4,6 +4,8 @@ import { RecetteRepository } from './recette.repository';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
 import { unlink } from 'fs';
+import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
+import {MoreThan} from "typeorm";
 
 @Injectable()
 export class RecetteService {
@@ -32,5 +34,13 @@ export class RecetteService {
       });
     }
     return;
+  }
+
+  getConsecutiveRecipes(getRandomRecipesDto: GetConsecutiveRecipesDto): Promise<Recette[]>{
+    const { array_size, start } = getRandomRecipesDto;
+
+    return this.recetteRepository.find({
+      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(array_size)
+    });
   }
 }
