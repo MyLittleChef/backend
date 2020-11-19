@@ -5,11 +5,19 @@ import { CreateRecetteDto } from './dto/create-recette.dto';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
 
 @Controller('recettes')
 export class RecetteController {
   constructor(private recetteService: RecetteService,
     ) {}
+
+  @Get('/consecutive')
+  async getRandomRecipes(
+      @Body() getConsecutiveRecipesDto : GetConsecutiveRecipesDto
+  ): Promise<Recette[]> {
+    return this.recetteService.getConsecutiveRecipes(getConsecutiveRecipesDto);
+  }
 
   @Get('/:id')
   async getRecette(

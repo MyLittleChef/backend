@@ -18,7 +18,7 @@ export class MarkRepository extends Repository<Mark> {
     try {
         await mark.save();
     } catch(error){
-        if(error.code === 23505) {
+        if(error.code == 23505) {
             throw new ConflictException('Mark already assigned');
         } else {
             this.logger.verbose(

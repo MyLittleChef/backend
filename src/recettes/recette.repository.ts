@@ -3,18 +3,22 @@ import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
 import { Difficulty } from './entities/difficulty.enum';
 import {
-    ConflictException,
+    ConflictException, ForbiddenException,
     InternalServerErrorException,
     Logger,
   } from '@nestjs/common';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
+
 @EntityRepository(Recette)
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
     async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
-      const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded } = createRecetteDto;
+      const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey } = createRecetteDto;
       let { ingredients, category, diets} = createRecetteDto;
+      if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
+        throw new ForbiddenException('ApiKey not recognized');
+      }
       const recette = this.create();
         recette.title = title;
         recette.provider = provider;
@@ -37,7 +41,7 @@ export class RecetteRepository extends Repository<Recette> {
         try {
             await recette.save();
         } catch (error) {
-            if (error.code === 23505) {
+            if (error.code == 23505) {
               //Duplicate name
               throw new ConflictException('Recipe name already exists');
             } else {

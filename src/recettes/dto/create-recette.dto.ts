@@ -36,4 +36,6 @@ export class CreateRecetteDto {
     @IsOptional()
     diets: string[];
 
+    @IsNotEmpty()
+    apiKey: string;
 }

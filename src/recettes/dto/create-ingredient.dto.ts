@@ -7,4 +7,6 @@ export class CreateIngredientDto {
     @IsOptional()
     uniteMesure: string;
 
+    @IsNotEmpty()
+    apiKey: string;
 }

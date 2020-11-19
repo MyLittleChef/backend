@@ -7,6 +7,8 @@ import { unlink } from 'fs';
 import { IngredientQuantityRepository } from './ingredientquantity.repository';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
 import { CreateIngredientQuantityDto } from './dto/create-ingredientquantity.dto';
+import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
+import {MoreThan} from "typeorm";
 
 @Injectable()
 export class RecetteService {
@@ -24,7 +26,6 @@ export class RecetteService {
    return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
   }
   async get(recetteId: number): Promise<Recette> {
-    console.log(await this.ingredientquantityRepository.find({relations: ["ingredient"], where:{id:4}}));
     return  this.recetteRepository.findOne({
        relations: ["ingredients","ingredients.ingredient"],where: { id: recetteId },
      });
@@ -40,5 +41,13 @@ export class RecetteService {
       });
     }
     return;
+  }
+
+  getConsecutiveRecipes(getRandomRecipesDto: GetConsecutiveRecipesDto): Promise<Recette[]>{
+    const { array_size, start } = getRandomRecipesDto;
+
+    return this.recetteRepository.find({
+      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(array_size)
+    });
   }
 }
