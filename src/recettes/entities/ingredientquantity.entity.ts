@@ -5,11 +5,10 @@ import {
     Column,
     JoinTable,
     ManyToOne,
+    Unique,
  } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
-
-// TODO : UNIQUE 
-
+@Unique(['ingredient','quantity'])
  @Entity()
  export class IngredientQuantity extends BaseEntity {
     @PrimaryGeneratedColumn()

@@ -40,7 +40,12 @@ export class RecetteController {
     @Body() createRecetteDto: CreateRecetteDto,
     @UploadedFile() file,
   ): Promise<Recette> {
+    if(file){
       return this.recetteService.create(createRecetteDto, file.filename);
+    } else {
+      return this.recetteService.create(createRecetteDto, "randomBoi");
+    }
+      
   }
 
   @Delete('/:id')

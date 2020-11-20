@@ -43,7 +43,7 @@ export class RecetteRepository extends Repository<Recette> {
         } catch (error) {
             if (error.code == 23505) {
               //Duplicate name
-              throw new ConflictException('Recipe name already exists');
+              throw new ConflictException(`Recipe ${recette.title} already exists`);
             } else {
               this.logger.verbose(
                 `Problem while saving the Recette: ${recette.title}, error is : ${error} !`,

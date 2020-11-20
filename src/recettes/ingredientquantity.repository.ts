@@ -1,7 +1,4 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { Recette } from './entities/recette.entity';
-import { CreateRecetteDto } from './dto/create-recette.dto';
-import { Difficulty } from './entities/difficulty.enum';
 import {
     ConflictException,
     InternalServerErrorException,
@@ -24,10 +21,11 @@ export class IngredientQuantityRepository extends Repository<IngredientQuantity>
         } catch (error) {
             if (error.code == 23505) {
               //Duplicate name
-              throw new ConflictException('Recipe name already exists');
+              const existing = this.findOne({where: {ingredient: {id: ingredientId} as any, quantity: quantity}});
+             return existing;
             } else {
               this.logger.verbose(
-                `Problem while saving the Recette: ${ingredientquantity.id}, error is : ${error} !`,
+                `Problem while saving the Recette: ${ingredientquantity}, error is : ${error} !`,
               );
               throw new InternalServerErrorException(error);
             }
