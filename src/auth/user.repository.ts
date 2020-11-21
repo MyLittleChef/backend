@@ -2,7 +2,7 @@ import { Repository, EntityRepository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
-  ConflictException,
+  ConflictException, ForbiddenException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
@@ -14,6 +14,7 @@ import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
 import { CookingFrequence } from './entity/cookingFrequence.enum';
 import { Recette } from 'src/recettes/entities/recette.entity';
+import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
@@ -72,10 +73,12 @@ export class UserRepository extends Repository<User> {
     resetPasswordDto: ResetPasswordDto,
     resetTokenValue: string,
     resetTokenExpiration: string,
+    user: User,
   ): Promise<void> {
-    const { username } = resetPasswordDto;
-    const user = await this.findOne({ username });
+    const { password } = resetPasswordDto;
 
+    user.salt = await bcrypt.genSalt();
+    user.password = await this.hashPassword(password, user.salt);
     user.resetPasswordToken = resetTokenValue;
     user.resetPasswordExpires = resetTokenExpiration;
 
@@ -84,18 +87,6 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
-
-    try {
-      sgMail.send({
-        from: 'pictalk.mail@gmail.com',
-        to: 'asidiras.csi@gmail.com',
-        subject: 'Your Password Reset Demand',
-        text: 'This is a test email',
-        html: '<p>This is a test email</p>',
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
   }
   async getUserDetails(user: User): Promise<User> {
     delete user.username;
@@ -103,9 +94,10 @@ export class UserRepository extends Repository<User> {
     delete user.salt;
     delete user.resetPasswordToken;
     delete user.resetPasswordExpires;
+    delete user.marks;
+    delete user.shoppingList;
+    delete user.toRecalculate;
 
-    const recipes = await this.find({ relations: ["starredRecipes"] });
-    console.log(recipes);
     return user;
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {
@@ -115,15 +107,14 @@ export class UserRepository extends Repository<User> {
     };
     if (username) {
       user.username = username;
-    } 
-    username ? user.username=username : void 0;
+    }
     if (password) {
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPassword(password, user.salt);
     }
     user.toRecalculate = true;
-    diets ? user.diets=getArrayFromStringIfNeeded(diets) : void 0;
-    allergies ? user.allergies=getArrayFromStringIfNeeded(allergies) : void 0;
+    diets ? user.diets = getArrayFromStringIfNeeded(diets) : void 0;
+    allergies ? user.allergies = getArrayFromStringIfNeeded(allergies) : void 0;
     cookingFrequence ? user.cookingFrequence=cookingFrequence : void 0;
     
     try {
@@ -136,6 +127,9 @@ export class UserRepository extends Repository<User> {
     delete user.salt;
     delete user.resetPasswordToken;
     delete user.resetPasswordExpires;
+    delete user.marks;
+    delete user.shoppingList;
+    delete user.toRecalculate;
     return user;
   }
 
@@ -144,7 +138,7 @@ export class UserRepository extends Repository<User> {
     getUser.toDoRecipes.push({ id: recipeId } as any);
     getUser.toRecalculate = true;
     try{
-      getUser.save()
+      await getUser.save()
     } catch (error) {
       this.logger.verbose(
         `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -162,7 +156,7 @@ export class UserRepository extends Repository<User> {
     getUser.toDoRecipes.splice(deletedRecipeIndex, 1);
     getUser.toRecalculate = true;
     try {
-      getUser.save();
+      await getUser.save();
     } catch (error) {
       this.logger.verbose(
         `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -177,7 +171,7 @@ export class UserRepository extends Repository<User> {
       getUser.starredRecipes.push({ id: recipeId } as any);
       getUser.toRecalculate = true;
       try{
-        getUser.save()
+        await getUser.save()
       } catch (error) {
         this.logger.verbose(
           `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -196,7 +190,7 @@ export class UserRepository extends Repository<User> {
     getUser.starredRecipes.splice(deletedRecipeIndex, 1);
     getUser.toRecalculate = true;
     try {
-      getUser.save();
+      await getUser.save();
     } catch (error) {
       this.logger.verbose(
         `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -211,7 +205,7 @@ export class UserRepository extends Repository<User> {
       getUser.doneRecipes.push({ id: recipeId } as any);
       getUser.toRecalculate = true;
       try{
-        getUser.save()
+        await getUser.save()
       } catch (error) {
         this.logger.verbose(
           `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -230,7 +224,7 @@ export class UserRepository extends Repository<User> {
     getUser.doneRecipes.splice(deletedRecipeIndex, 1);
     
     try {
-      getUser.save();
+      await getUser.save();
     } catch (error) {
       this.logger.verbose(
         `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -240,20 +234,25 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
-    async addSuggestedRecipes(user:User, recipeId:number):Promise<Recette[]>{
-      const getUser = await this.findOne({relations: ["suggestedRecipes"],where: {id: user.id}});
-      getUser.suggestedRecipes.push({ id: recipeId } as any);
-      getUser.toRecalculate = true;
+    async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<Recette[]>{
+      const { suggestedRecipesIds, apiKey} = addSuggestedRecipesDto;
+      if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
+        throw new ForbiddenException('ApiKey not recognized');
+      }
+      const user = await this.findOne({relations: ["suggestedRecipes"],where: {id: userId}});
+      this.logger.verbose(suggestedRecipesIds);
+      user.suggestedRecipes.concat(suggestedRecipesIds.map(recipeId => ({ id: recipeId } as any)));
+      user.toRecalculate = true;
       try{
-        getUser.save()
+        await user.save()
       } catch (error) {
         this.logger.verbose(
-          `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
+          `Problem while saving the User: ${user.id}, error is : ${error} !`,
         );
         throw new InternalServerErrorException(error);
         }
-        console.log(getUser);
-        return getUser.suggestedRecipes;
+        console.log(user);
+        return user.suggestedRecipes;
     }
   
   async deleteSuggestedRecipes(user:User, recipeId:number):Promise<void>{
@@ -265,7 +264,7 @@ export class UserRepository extends Repository<User> {
     getUser.suggestedRecipes.splice(deletedRecipeIndex, 1);
     
     try {
-      getUser.save();
+      await getUser.save();
     } catch (error) {
       this.logger.verbose(
         `Problem while saving the User: ${getUser.id}, error is : ${error} !`,
@@ -282,7 +281,7 @@ export class UserRepository extends Repository<User> {
       }
       user.toRecalculate = false;
       try {
-        user.save();
+        await user.save();
       } catch (error){
         this.logger.verbose(
           `Problem while saving the User: ${user.id}, error is : ${error} !`,

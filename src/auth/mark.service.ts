@@ -16,7 +16,7 @@ export class MarkService {
 
   getMark(id:number, user:User):Promise<Mark>{
     return this.markRepository.findOne({
-        where: { recipeId: id, user: user },
+        where: { recipe: id, user: user },
       });
   }
 

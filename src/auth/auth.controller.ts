@@ -26,6 +26,8 @@ import { Recette } from 'src/recettes/entities/recette.entity';
 import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListItem } from './entity/shoppingItem.entity';
 import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
+import {GetConsecutiveRecipesDto} from "../recettes/dto/get-consecutive-recipes-dto";
+import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 @Controller('user')
 export class AuthController {
   private logger = new Logger('AuthController');
@@ -50,13 +52,15 @@ export class AuthController {
   }
 
   @Post('/resetPassword')
+  @UseGuards(AuthGuard())
   resetPassword(
+    @GetUser() user: User,
     @Body(ValidationPipe) resetPasswordDto: ResetPasswordDto,
   ): Promise<void> {
     this.logger.verbose(
-      `User "${resetPasswordDto.username}" is trying to Reset Password`,
+      `User "${user}" is trying to Reset Password`,
     );
-    return this.authService.resetPassword(resetPasswordDto);
+    return this.authService.resetPassword(user, resetPasswordDto);
   }
 
   @Get('/details')
@@ -65,7 +69,6 @@ export class AuthController {
     this.logger.verbose(`User "${user.username}" is trying to get Details`);
     return this.authService.getUserDetails(user);
   }
-
 
   @Put('/details')
   @UseGuards(AuthGuard())
@@ -109,13 +112,13 @@ export class AuthController {
   ): Promise<Recette[]>{
     return this.authService.getSuggestedRecipes(user);
   }
-  @Post('/suggestedRecipes/:id')
-  @UseGuards(AuthGuard())
+
+  @Post(':id/suggestedRecipes')
   addSuggestedRecipes(
-    @GetUser() user:User,
-    @Param('id', ParseIntPipe) id: number
+    @Body() addSuggestedRecipesDto : AddSuggestedRecipesDto,
+    @Param('id', ParseIntPipe) userId: number
   ): Promise<Recette[]>{
-    return this.authService.addSuggestedRecipes(user,id);
+    return this.authService.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
 
   @Delete('/suggestedRecipes/:id')
@@ -185,13 +188,12 @@ export class AuthController {
   ): Promise<Mark> {
     return this.markService.getMark(id, user);
   }
-  
 
   @Post('/mark')
   @UseGuards(AuthGuard())
   createMark(
-    @GetUser() user:User,
-    @Body(ValidationPipe) createMarkDto: CreateMarkDto,
+      @GetUser() user:User,
+      @Body(ValidationPipe) createMarkDto: CreateMarkDto,
   ): Promise<Mark>{
     return this.markService.createMark(user,createMarkDto);
   }

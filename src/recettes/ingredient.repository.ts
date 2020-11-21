@@ -1,6 +1,6 @@
 import { Repository, EntityRepository } from 'typeorm';
 import {
-    ConflictException, ForbiddenException,
+    ForbiddenException,
     InternalServerErrorException,
     Logger,
 } from '@nestjs/common';

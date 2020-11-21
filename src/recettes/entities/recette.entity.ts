@@ -45,9 +45,7 @@ export class Recette extends BaseEntity {
     @Column()
     difficulty: Difficulty;
 
-    @ManyToMany(
-      () => IngredientQuantity,
-    )
+    @OneToMany(() => IngredientQuantity, ingredientQuantity => ingredientQuantity.recette)
     @JoinTable()
     ingredients: IngredientQuantity[];
 

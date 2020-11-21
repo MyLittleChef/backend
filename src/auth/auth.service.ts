@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import * as config from 'config';
 import { Recette } from 'src/recettes/entities/recette.entity';
+import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
@@ -46,13 +47,14 @@ export class AuthService {
     return { accessToken, expiresIn };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+  async resetPassword(user: User, resetPasswordDto: ResetPasswordDto): Promise<void> {
     const resetTokenValue = randomBytes(20).toString('hex');
     const resetTokenExpiration = String(Date.now() + 3600000);
     return this.userRepository.resetPassword(
       resetPasswordDto,
       resetTokenValue,
       resetTokenExpiration,
+      user
     );
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {
@@ -101,8 +103,8 @@ export class AuthService {
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
     return getUser.suggestedRecipes;
   }
-  async addSuggestedRecipes(user:User, recipeId:number):Promise<Recette[]>{
-    return this.userRepository.addSuggestedRecipes(user, recipeId);
+  async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<Recette[]>{
+    return this.userRepository.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
   async deleteSuggestedRecipes(user:User, recipeId: number): Promise<void> {
     return this.userRepository.deleteSuggestedRecipes(user, recipeId);
