@@ -12,6 +12,7 @@ import { EditUserDto } from './dto/edit-user.dto';
 import * as config from 'config';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
+import {getRepository} from "typeorm";
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
@@ -101,6 +102,16 @@ export class AuthService {
 
   async getSuggestedRecipes(user:User):Promise<Recette[]>{
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
+    if (getUser.suggestedRecipes.length == 0) {
+      this.logger.verbose('nil')
+      return await getRepository(Recette)
+          .createQueryBuilder()
+          .select('*')
+          .from(Recette , 'recette')
+          .orderBy('RANDOM()')
+          .limit(1)
+          .execute();
+    }
     return getUser.suggestedRecipes;
   }
   async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<number[]>{

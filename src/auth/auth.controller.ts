@@ -26,7 +26,6 @@ import { Recette } from 'src/recettes/entities/recette.entity';
 import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListItem } from './entity/shoppingItem.entity';
 import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
-import {GetConsecutiveRecipesDto} from "../recettes/dto/get-consecutive-recipes-dto";
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 @Controller('user')
 export class AuthController {
