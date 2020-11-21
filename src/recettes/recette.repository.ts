@@ -19,6 +19,9 @@ export class RecetteRepository extends Repository<Recette> {
         if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
             throw new ForbiddenException('ApiKey not recognized');
         }
+        if((await this.find({where: {provider: provider, title: title}})).length > 0){
+            throw new ConflictException(`Recipe ${title} from ${provider} already exists`);
+        }
         const recette = this.create();
         recette.title = title;
         recette.provider = provider;
@@ -42,7 +45,7 @@ export class RecetteRepository extends Repository<Recette> {
         } catch (error) {
             if (error.code == 23505) {
               //Duplicate name
-              throw new ConflictException(`Recipe ${recette.title} already exists`);
+              throw new ConflictException(`Recipe ${title} from ${provider} already exists`);
             } else {
               this.logger.verbose(
                 `Problem while saving the Recette: ${recette.title}, error is : ${error} !`,
