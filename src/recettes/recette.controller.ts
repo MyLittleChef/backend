@@ -45,7 +45,6 @@ export class RecetteController {
     } else {
       return this.recetteService.create(createRecetteDto, "randomBoi");
     }
-      
   }
 
   @Delete('/:id')
@@ -58,5 +57,4 @@ export class RecetteController {
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './files' });
   }
-
 }

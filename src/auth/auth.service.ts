@@ -103,7 +103,7 @@ export class AuthService {
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
     return getUser.suggestedRecipes;
   }
-  async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<Recette[]>{
+  async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<number[]>{
     return this.userRepository.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
   async deleteSuggestedRecipes(user:User, recipeId: number): Promise<void> {

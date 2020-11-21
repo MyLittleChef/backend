@@ -234,15 +234,19 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
-    async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<Recette[]>{
-      const { suggestedRecipesIds, apiKey} = addSuggestedRecipesDto;
+    async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<number[]>{
+      const { suggestedRecipesIds, apiKey } = addSuggestedRecipesDto;
       if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
         throw new ForbiddenException('ApiKey not recognized');
       }
-      const user = await this.findOne({relations: ["suggestedRecipes"],where: {id: userId}});
-      this.logger.verbose(suggestedRecipesIds);
-      user.suggestedRecipes.concat(suggestedRecipesIds.map(recipeId => ({ id: recipeId } as any)));
+      const user = await this.findOne({relations: ["suggestedRecipes"], where: {id: userId}});
+      const getArrayFromStringIfNeeded = function(input) {
+        return (Array.isArray(input) == false ? new Array(input.toString()) : input).map(id => parseInt(id));
+      };
+      let newSuggestedRecipes = getArrayFromStringIfNeeded( suggestedRecipesIds).map(recipeId => ({ id: recipeId } as Recette))
+      user.suggestedRecipes = user.suggestedRecipes.concat(newSuggestedRecipes);
       user.toRecalculate = true;
+
       try{
         await user.save()
       } catch (error) {
@@ -251,8 +255,8 @@ export class UserRepository extends Repository<User> {
         );
         throw new InternalServerErrorException(error);
         }
-        console.log(user);
-        return user.suggestedRecipes;
+
+      return [... new Set(user.suggestedRecipes.map(recipes =>(recipes.id)).sort((a, b) => a - b))];
     }
   
   async deleteSuggestedRecipes(user:User, recipeId:number):Promise<void>{

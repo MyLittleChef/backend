@@ -117,7 +117,7 @@ export class AuthController {
   addSuggestedRecipes(
     @Body() addSuggestedRecipesDto : AddSuggestedRecipesDto,
     @Param('id', ParseIntPipe) userId: number
-  ): Promise<Recette[]>{
+  ): Promise<number[]>{
     return this.authService.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
 

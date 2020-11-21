@@ -14,19 +14,18 @@ export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
     async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
-      const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey } = createRecetteDto;
-      let { ingredients, category, diets} = createRecetteDto;
-      if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
-        throw new ForbiddenException('ApiKey not recognized');
-      }
-      const recette = this.create();
+        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey } = createRecetteDto;
+        let { ingredients, category, diets} = createRecetteDto;
+        if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
+            throw new ForbiddenException('ApiKey not recognized');
+        }
+        const recette = this.create();
         recette.title = title;
         recette.provider = provider;
         recette.difficulty = difficulty;
         const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(input.toString()) : input;
         };
-        ingredients = getArrayFromStringIfNeeded(ingredients);
         recette.ingredients = ingredientquantities.map(ingredientquantity=> ({ id: ingredientquantity.id } as any));
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = filename;
