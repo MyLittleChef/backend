@@ -15,6 +15,7 @@ import sgMail = require('@sendgrid/mail');
 import { CookingFrequence } from './entity/cookingFrequence.enum';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
+import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
@@ -259,14 +260,19 @@ export class UserRepository extends Repository<User> {
       return [... new Set(user.suggestedRecipes.map(recipes =>(recipes.id)).sort((a, b) => a - b))];
     }
   
-  async deleteSuggestedRecipes(user:User, recipeId:number):Promise<void>{
+  async deleteSuggestedRecipes(user:User, deleteSuggestedRecipesDto:DeleteSuggestedRecipesDto):Promise<void>{
     const getUser = await this.findOne({relations: ["suggestedRecipes"],where: {id: user.id}});
-    const deletedRecipeIndex = getUser.suggestedRecipes.findIndex(
-      suggestedRecipes => suggestedRecipes.id === recipeId
-    );
+    const { id } = deleteSuggestedRecipesDto;
+    const getArrayFromStringIfNeeded = function(input) {
+      return (Array.isArray(input) == false ? new Array(input.toString()) : input).map(id => parseInt(id));
+    };
+
+    let suggestedRecipesToDeleteIds = getArrayFromStringIfNeeded(id)
+    suggestedRecipesToDeleteIds = suggestedRecipesToDeleteIds.filter(id => id > 0)
     getUser.toRecalculate = true;
-    getUser.suggestedRecipes.splice(deletedRecipeIndex, 1);
-    
+    getUser.suggestedRecipes = getUser.suggestedRecipes.filter(
+        (recipe) => !suggestedRecipesToDeleteIds.includes(recipe.id)
+    )
     try {
       await getUser.save();
     } catch (error) {

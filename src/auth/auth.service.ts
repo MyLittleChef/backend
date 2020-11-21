@@ -13,6 +13,8 @@ import * as config from 'config';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 import {getRepository} from "typeorm";
+import {GetSuggestedRecipesDto} from "./dto/get-suggested-recipes.dto";
+import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
@@ -61,6 +63,7 @@ export class AuthService {
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {
     return this.userRepository.editUser(user, editUserDto);
   }
+
   async getUserDetails(user: User): Promise<User> {
     return this.userRepository.getUserDetails(user);
   }
@@ -82,9 +85,11 @@ export class AuthService {
     const getUser = await this.userRepository.findOne({ relations: ["starredRecipes"], where: { id: user.id}  });
     return getUser.starredRecipes;
   }
+
   async addStarredRecipes(user:User, recipeId:number):Promise<Recette[]>{
     return this.userRepository.addStarredRecipes(user, recipeId);
   }
+
   async deleteStarredRecipes(user:User, recipeId: number): Promise<void> {
     return this.userRepository.deleteStarredRecipes(user, recipeId);
   }
@@ -93,32 +98,36 @@ export class AuthService {
     const getUser = await this.userRepository.findOne({ relations: ["doneRecipes"], where: { id: user.id} });
     return getUser.doneRecipes;
   }
+
   async addDoneRecipes(user:User, recipeId:number):Promise<Recette[]>{
     return this.userRepository.addDoneRecipes(user, recipeId);
   }
+
   async deleteDoneRecipes(user:User, recipeId: number): Promise<void> {
     return this.userRepository.deleteDoneRecipes(user, recipeId);
   }
 
-  async getSuggestedRecipes(user:User):Promise<Recette[]>{
+  async getSuggestedRecipes(user:User, getSuggestedRecipesDto:GetSuggestedRecipesDto):Promise<Recette[]>{
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
+    const { nb } = getSuggestedRecipesDto;
     if (getUser.suggestedRecipes.length == 0) {
-      this.logger.verbose('nil')
       return await getRepository(Recette)
           .createQueryBuilder()
           .select('*')
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
-          .limit(1)
+          .limit(nb ? parseInt(nb) : 1)
           .execute();
     }
     return getUser.suggestedRecipes;
   }
+
   async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<number[]>{
     return this.userRepository.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
-  async deleteSuggestedRecipes(user:User, recipeId: number): Promise<void> {
-    return this.userRepository.deleteSuggestedRecipes(user, recipeId);
+
+  async deleteSuggestedRecipes(user:User, deleteSuggestedRecipesDto: DeleteSuggestedRecipesDto): Promise<void> {
+    return this.userRepository.deleteSuggestedRecipes(user, deleteSuggestedRecipesDto);
   }
 
   async toRecalculateFalse(userId: number):Promise<void>{

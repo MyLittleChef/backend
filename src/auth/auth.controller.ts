@@ -27,6 +27,8 @@ import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListItem } from './entity/shoppingItem.entity';
 import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
+import {GetSuggestedRecipesDto} from "./dto/get-suggested-recipes.dto";
+import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 @Controller('user')
 export class AuthController {
   private logger = new Logger('AuthController');
@@ -107,9 +109,10 @@ export class AuthController {
   @Get('/suggestedRecipes')
   @UseGuards(AuthGuard())
   getSuggestedRecipes(
-    @GetUser() user:User
+    @GetUser() user:User,
+    @Body(ValidationPipe) getSuggestedRecipes: GetSuggestedRecipesDto
   ): Promise<Recette[]>{
-    return this.authService.getSuggestedRecipes(user);
+    return this.authService.getSuggestedRecipes(user, getSuggestedRecipes);
   }
 
   @Post(':id/suggestedRecipes')
@@ -120,13 +123,13 @@ export class AuthController {
     return this.authService.addSuggestedRecipes(userId, addSuggestedRecipesDto);
   }
 
-  @Delete('/suggestedRecipes/:id')
+  @Delete('/suggestedRecipes')
   @UseGuards(AuthGuard())
   deleteSuggestedRecipes(
     @GetUser() user:User,
-    @Param('id', ParseIntPipe) id: number
+    @Body(ValidationPipe) deleteSuggestedRecipesDto: DeleteSuggestedRecipesDto
   ): Promise<void>{
-    return this.authService.deleteSuggestedRecipes(user, id);
+    return this.authService.deleteSuggestedRecipes(user, deleteSuggestedRecipesDto);
   }
 
   @Get('/toDoRecipes')
