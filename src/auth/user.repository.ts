@@ -74,12 +74,10 @@ export class UserRepository extends Repository<User> {
     resetPasswordDto: ResetPasswordDto,
     resetTokenValue: string,
     resetTokenExpiration: string,
-    user: User,
   ): Promise<void> {
-    const { password } = resetPasswordDto;
+    const { username } = resetPasswordDto;
+    const user = await this.findOne({ username });
 
-    user.salt = await bcrypt.genSalt();
-    user.password = await this.hashPassword(password, user.salt);
     user.resetPasswordToken = resetTokenValue;
     user.resetPasswordExpires = resetTokenExpiration;
 
@@ -87,6 +85,18 @@ export class UserRepository extends Repository<User> {
       await user.save();
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+
+    try {
+      sgMail.send({
+        from: 'pictalk.mail@gmail.com',
+        to: 'asidiras.csi@gmail.com',
+        subject: 'Your Password Reset Demand',
+        text: 'This is a test email',
+        html: '<p>This is a test email</p>',
+      });
+    } catch (error) {
+      throw new Error(error);
     }
   }
   async getUserDetails(user: User): Promise<User> {
@@ -244,8 +254,7 @@ export class UserRepository extends Repository<User> {
       const getArrayFromStringIfNeeded = function(input) {
         return (Array.isArray(input) == false ? new Array(input.toString()) : input).map(id => parseInt(id));
       };
-      let newSuggestedRecipes = getArrayFromStringIfNeeded( suggestedRecipesIds).map(recipeId => ({ id: recipeId } as Recette))
-      user.suggestedRecipes = user.suggestedRecipes.concat(newSuggestedRecipes);
+      getArrayFromStringIfNeeded( suggestedRecipesIds).map(recipeId => ({ id: recipeId } as Recette)).forEach(recipe => { user.suggestedRecipes.push(recipe);});
       user.toRecalculate = true;
 
       try{

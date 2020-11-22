@@ -50,14 +50,13 @@ export class AuthService {
     return { accessToken, expiresIn };
   }
 
-  async resetPassword(user: User, resetPasswordDto: ResetPasswordDto): Promise<void> {
+  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
     const resetTokenValue = randomBytes(20).toString('hex');
     const resetTokenExpiration = String(Date.now() + 3600000);
     return this.userRepository.resetPassword(
       resetPasswordDto,
       resetTokenValue,
-      resetTokenExpiration,
-      user
+      resetTokenExpiration
     );
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<User> {

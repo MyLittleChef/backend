@@ -53,15 +53,13 @@ export class AuthController {
   }
 
   @Post('/resetPassword')
-  @UseGuards(AuthGuard())
   resetPassword(
-    @GetUser() user: User,
     @Body(ValidationPipe) resetPasswordDto: ResetPasswordDto,
   ): Promise<void> {
     this.logger.verbose(
-      `User "${user}" is trying to Reset Password`,
+      `User "${`User "${resetPasswordDto.username}" is trying to Reset Password`}" is trying to Reset Password`,
     );
-    return this.authService.resetPassword(user, resetPasswordDto);
+    return this.authService.resetPassword(resetPasswordDto);
   }
 
   @Get('/details')
