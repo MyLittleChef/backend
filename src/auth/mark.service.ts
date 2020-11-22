@@ -1,6 +1,7 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { ForbiddenException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateMarkDto } from "./dto/create-mark.dto";
+import { GetMarkDto } from "./dto/getMark.dto";
 import { Mark } from "./entity/mark.entity";
 import { MarkRepository } from "./mark.repository";
 import { User } from "./user.entity";
@@ -14,9 +15,12 @@ export class MarkService {
     private markRepository: MarkRepository,
   ) {}
 
-  getMark(id:number, user:User):Promise<Mark>{
+  getMark(id:number, getMarkDto:GetMarkDto):Promise<Mark>{
+    if (getMarkDto.apiKey !== "c8g6s2e375bf14e47ae411c4ab6751449") {
+      throw new ForbiddenException('ApiKey not recognized');
+  }
     return this.markRepository.findOne({
-        where: { recipe: id, user: user },
+        where: { recipe: id, user: getMarkDto.userId },
       });
   }
 

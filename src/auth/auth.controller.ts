@@ -29,6 +29,7 @@ import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 import {GetSuggestedRecipesDto} from "./dto/get-suggested-recipes.dto";
 import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
+import { GetMarkDto } from "./dto/getMark.dto";
 @Controller('user')
 export class AuthController {
   private logger = new Logger('AuthController');
@@ -181,12 +182,11 @@ export class AuthController {
   }
 
   @Get('/mark/:id')
-  @UseGuards(AuthGuard())
   getMark(
-    @GetUser() user:User,
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) getMarkDto:GetMarkDto
   ): Promise<Mark> {
-    return this.markService.getMark(id, user);
+    return this.markService.getMark(id, getMarkDto);
   }
 
   @Post('/mark')
