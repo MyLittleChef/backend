@@ -43,7 +43,7 @@ export class RecetteController {
     if(file){
       return this.recetteService.create(createRecetteDto, file.filename);
     } else {
-      return this.recetteService.create(createRecetteDto, "randomBoi");
+      return this.recetteService.create(createRecetteDto, "no photo provided");
     }
   }
 

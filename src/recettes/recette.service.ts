@@ -21,15 +21,19 @@ export class RecetteService {
   private logger = new Logger('RecetteService');
 
   async create(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
-   const ingredientquantities: IngredientQuantity[] = await Promise.all(createRecetteDto.ingredients.map((ingredient:CreateIngredientQuantityDto) => this.ingredientquantityRepository.addIngredientsQuantity(ingredient)));
-   console.log(ingredientquantities);
+   const ingredientquantities: IngredientQuantity[] = await Promise.all(createRecetteDto.ingredients.map(
+       (ingredient:string) => this.ingredientquantityRepository.addIngredientsQuantity(JSON.parse(ingredient))
+       )
+   );
    return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
   }
+
   async get(recetteId: number): Promise<Recette> {
     return  this.recetteRepository.findOne({
        relations: ["ingredients","ingredients.ingredient"],where: { id: recetteId },
      });
-   } 
+   }
+
   async remove(recetteId: number): Promise<void> {
     const recipe:Recette = await this.recetteRepository.findOne({where: {id:recetteId}});
     const result = await this.recetteRepository.delete({id: recetteId});

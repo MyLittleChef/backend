@@ -31,7 +31,7 @@ export class CreateRecetteDto {
     difficulty: Difficulty;
 
     @IsNotEmpty()
-    ingredients: CreateIngredientQuantityDto[]
+    ingredients: string[]
 
     @IsOptional()
     diets: string[];
