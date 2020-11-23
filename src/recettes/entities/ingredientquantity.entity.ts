@@ -21,7 +21,7 @@ import {Recette} from "./recette.entity";
     @ManyToOne(() => Recette)
     recette: Recette;
  
-    @Column()
+    @Column("decimal", { precision: 6, scale: 2 })
     quantity: number;
  
  }
