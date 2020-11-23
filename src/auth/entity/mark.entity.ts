@@ -1,5 +1,5 @@
 import { Recette } from "src/recettes/entities/recette.entity";
-import {BaseEntity, Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
 import { User } from "../user.entity";
 import { Score } from "./score.enum";
 

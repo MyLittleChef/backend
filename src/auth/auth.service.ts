@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger, ForbiddenException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -13,7 +13,6 @@ import * as config from 'config';
 import { Recette } from 'src/recettes/entities/recette.entity';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 import {getRepository} from "typeorm";
-import {GetSuggestedRecipesDto} from "./dto/get-suggested-recipes.dto";
 import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 @Injectable()
 export class AuthService {
@@ -106,16 +105,16 @@ export class AuthService {
     return this.userRepository.deleteDoneRecipes(user, recipeId);
   }
 
-  async getSuggestedRecipes(user:User, getSuggestedRecipesDto:GetSuggestedRecipesDto):Promise<Recette[]>{
-    const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes"], where: { id: user.id} });
-    const { nb } = getSuggestedRecipesDto;
+  async getSuggestedRecipes(user:User, nb:number):Promise<Recette[]>{
+    const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes","suggestedRecipes.ingredients","suggestedRecipes.ingredients.ingredient"], where: { id: user.id} });
+    console.log(getUser);
     if (getUser.suggestedRecipes.length == 0) {
       return await getRepository(Recette)
           .createQueryBuilder()
           .select('*')
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
-          .limit(nb ? parseInt(nb) : 10)
+          .limit(nb ? nb : 10)
           .execute();
     }
     return getUser.suggestedRecipes;
@@ -129,10 +128,13 @@ export class AuthService {
     return this.userRepository.deleteSuggestedRecipes(user, deleteSuggestedRecipesDto);
   }
 
-  async toRecalculateFalse(userId: number):Promise<void>{
-    return this.userRepository.toRecalculateFalse(userId);
+  async toRecalculateFalse(userId: number, apiKey:string):Promise<void>{
+    return this.userRepository.toRecalculateFalse(userId, apiKey);
   }
-  async getToRecalculateUsers():Promise<User[]>{
+  async getToRecalculateUsers(apiKey:string):Promise<User[]>{
+    if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
+      throw new ForbiddenException('ApiKey not recognized');
+    }
     const users:User[] = await this.userRepository.find({where: {toRecalculate: true}});
     users.map(user => {
       delete user.password;

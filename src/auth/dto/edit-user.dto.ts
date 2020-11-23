@@ -29,18 +29,6 @@ export class EditUserDto {
   cookingFrequence: CookingFrequence;
 
   @IsOptional()
-  toDoRecipes: string[];
-
-  @IsOptional()
-  starredRecipes: string[];
-
-  @IsOptional()
-  doneRecipes: string[];
-  
-  @IsOptional()
-  shoppingList: string[];
-
-  @IsOptional()
   @IsString()
   @MinLength(8)
   @MaxLength(20)

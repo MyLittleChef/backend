@@ -293,7 +293,10 @@ export class UserRepository extends Repository<User> {
       return;
     }
 
-    async toRecalculateFalse(userId:number):Promise<void>{
+    async toRecalculateFalse(userId:number, apiKey:string):Promise<void>{
+      if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
+        throw new ForbiddenException('ApiKey not recognized');
+      }
       const user = await this.findOne({where: {id: userId}});
       if(!user) {
         throw new NotFoundException(`User with id ${userId} not found`);

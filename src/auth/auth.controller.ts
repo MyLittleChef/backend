@@ -27,7 +27,6 @@ import { ShoppingListService } from './shoppingList.service';
 import { ShoppingListItem } from './entity/shoppingItem.entity';
 import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
-import {GetSuggestedRecipesDto} from "./dto/get-suggested-recipes.dto";
 import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 import { GetMarkDto } from "./dto/getMark.dto";
 @Controller('user')
@@ -105,13 +104,13 @@ export class AuthController {
     return this.authService.deleteStarredRecipes(user, id);
   }
 
-  @Get('/suggestedRecipes')
+  @Get('/suggestedRecipes/:nb')
   @UseGuards(AuthGuard())
   getSuggestedRecipes(
     @GetUser() user:User,
-    @Body(ValidationPipe) getSuggestedRecipes: GetSuggestedRecipesDto
-  ): Promise<Recette[]>{
-    return this.authService.getSuggestedRecipes(user, getSuggestedRecipes);
+    @Param('nb', ParseIntPipe) nb:number
+    ): Promise<Recette[]>{
+    return this.authService.getSuggestedRecipes(user, nb);
   }
 
   @Post(':id/suggestedRecipes')
@@ -199,15 +198,18 @@ export class AuthController {
   }
 
   @Get('/toRecalculate')
-  getToRecalculateUsers():Promise<User[]>{
-    return this.authService.getToRecalculateUsers();
+  getToRecalculateUsers(
+    @Body('apiKey') apiKey:string
+  ):Promise<User[]>{
+    return this.authService.getToRecalculateUsers(apiKey);
   }
 
   @Post('/calculated/:id')
   toRecalculateFalse(
-    @Param('id', ParseIntPipe) userId:number
+    @Param('id', ParseIntPipe) userId:number,
+    @Body('apiKey') apiKey:string
   ):Promise<void>{
-    return this.authService.toRecalculateFalse(userId);
+    return this.authService.toRecalculateFalse(userId,apiKey);
   }
 
   @Get('/shoppingList')
