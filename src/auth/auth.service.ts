@@ -115,7 +115,7 @@ export class AuthService {
           .select('*')
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
-          .limit(nb ? parseInt(nb) : 1)
+          .limit(nb ? parseInt(nb) : 100)
           .execute();
     }
     return getUser.suggestedRecipes;
