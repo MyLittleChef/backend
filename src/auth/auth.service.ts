@@ -113,7 +113,6 @@ export class AuthService {
       return await getRepository(Recette)
           .createQueryBuilder()
           .select('*')
-          .distinct(true)
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
           .limit(nb ? parseInt(nb) : 10)
