@@ -23,8 +23,8 @@ export class User extends BaseEntity {
   @Column()
   username: string;
 
-  @Column()
-  diets: string;
+  @Column("text", { array: true })  
+  diets: string[];
 
   @ManyToMany(() => Ingredient)
   @JoinTable()
