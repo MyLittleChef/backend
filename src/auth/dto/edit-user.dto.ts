@@ -4,6 +4,7 @@ import {
   MaxLength,
   Matches,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
 import { CookingFrequence } from '../entity/cookingFrequence.enum';
 
@@ -25,7 +26,7 @@ export class EditUserDto {
   allergies: string[];
 
   @IsOptional()
-  @IsString()
+  @IsEnum(CookingFrequence)
   cookingFrequence: CookingFrequence;
 
   @IsOptional()

@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsEnum, IsNotEmpty } from "class-validator";
 import { Score } from "../entity/score.enum";
 
 export class CreateMarkDto {
@@ -6,5 +6,6 @@ export class CreateMarkDto {
     recipeId: string;
 
     @IsNotEmpty()
+    @IsEnum(Score)
     score: Score;
 }
