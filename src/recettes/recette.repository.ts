@@ -14,8 +14,7 @@ export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
     async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
-        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey } = createRecetteDto;
-        let { ingredients, category, diets} = createRecetteDto;
+        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey, category, diets } = createRecetteDto;
         if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
             throw new ForbiddenException('ApiKey not recognized');
         }
@@ -34,11 +33,11 @@ export class RecetteRepository extends Repository<Recette> {
         recette.photopath = filename;
         recette.servings = servings;
         recette.category = category ? getArrayFromStringIfNeeded(category) : [];
-        recette.dishTypes = dishTypes ? dishTypes : "";
+        recette.dishTypes = dishTypes ? dishTypes : [];
         recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
         recette.difficulty = difficulty ? difficulty : Difficulty.VOID;
         recette.instructions = instructions ? instructions : "";
-        recette.materialNeeded = materialNeeded ? materialNeeded : "";
+        recette.materialNeeded = materialNeeded ? materialNeeded : [];
 
         try {
             await recette.save();

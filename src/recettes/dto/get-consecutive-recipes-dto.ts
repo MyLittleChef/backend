@@ -1,7 +1,7 @@
 import { IsNotEmpty } from "class-validator";
 export class GetConsecutiveRecipesDto {
     @IsNotEmpty()
-    array_size: string;
+    arraySize: string;
 
     @IsNotEmpty()
     start: string;

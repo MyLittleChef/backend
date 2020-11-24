@@ -6,7 +6,6 @@ import { CreateRecetteDto } from './dto/create-recette.dto';
 import { unlink } from 'fs';
 import { IngredientQuantityRepository } from './ingredientquantity.repository';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
-import { CreateIngredientQuantityDto } from './dto/create-ingredientquantity.dto';
 import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
 import {MoreThan} from "typeorm";
 
@@ -51,10 +50,10 @@ export class RecetteService {
   }
 
   getConsecutiveRecipes(getRandomRecipesDto: GetConsecutiveRecipesDto): Promise<Recette[]>{
-    const { array_size, start } = getRandomRecipesDto;
+    const { arraySize, start } = getRandomRecipesDto;
 
     return this.recetteRepository.find({
-      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(array_size)
+      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(arraySize)
     });
   }
 
@@ -62,5 +61,10 @@ export class RecetteService {
     return  this.recetteRepository.findOne({
       relations: ["ingredients","ingredients.ingredient"],where: { title: title },
     });
+  }
+
+  async getImage(recipeId:number, res){
+    const recipe = await this.recetteRepository.findOne({where: {id: recipeId}});
+    return res.sendFile(recipe.photopath, { root: './files' });
   }
 }

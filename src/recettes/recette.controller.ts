@@ -59,9 +59,20 @@ export class RecetteController {
     @Param('id', ParseIntPipe) recetteId: number,
   ): Promise<void>{
     return this.recetteService.remove(recetteId);
-  }  
+  } 
+  
   @Get('/image/:imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './files' });
   }
+  
+  @Get('/:id/image')
+  getImage(
+    @Param('id', ParseIntPipe) recipeId:number,
+    @Res() res
+    ){
+      return this.recetteService.getImage(recipeId, res);
+    }
+  
+
 }

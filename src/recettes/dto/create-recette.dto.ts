@@ -19,13 +19,13 @@ export class CreateRecetteDto {
     category: string[];
 
     @IsOptional()
-    dishTypes: string;
+    dishTypes: string[];
 
     @IsOptional()
     instructions: string;
 
     @IsOptional()
-    materialNeeded: string;
+    materialNeeded: string[];
 
     @IsOptional()
     @IsEnum(Difficulty)

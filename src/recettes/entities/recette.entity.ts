@@ -33,14 +33,14 @@ export class Recette extends BaseEntity {
     @Column("text",{array: true})
     category: string[];
 
-    @Column()
-    dishTypes: string;
+    @Column("text", { array: true })
+    dishTypes: string[];
 
     @Column()
     instructions: string;
 
-    @Column()
-    materialNeeded: string;
+    @Column("text", { array: true })
+    materialNeeded: string[];
     
     @Column()
     difficulty: Difficulty;

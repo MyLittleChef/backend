@@ -107,14 +107,13 @@ export class AuthService {
 
   async getSuggestedRecipes(user:User, nb:number):Promise<Recette[]>{
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes","suggestedRecipes.ingredients","suggestedRecipes.ingredients.ingredient"], where: { id: user.id} });
-    console.log(getUser);
     if (getUser.suggestedRecipes.length == 0) {
       return await getRepository(Recette)
           .createQueryBuilder()
           .select('*')
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
-          .limit(nb ? nb : 10)
+          .limit(nb ? nb : 25)
           .execute();
     }
     return getUser.suggestedRecipes;
