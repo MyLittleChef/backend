@@ -57,4 +57,10 @@ export class RecetteService {
       relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(array_size)
     });
   }
+
+  getByName(title:string):Promise<Recette>{
+    return  this.recetteRepository.findOne({
+      relations: ["ingredients","ingredients.ingredient"],where: { title: title },
+    });
+  }
 }

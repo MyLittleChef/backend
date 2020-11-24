@@ -25,4 +25,10 @@ export class IngredientService {
     }
     return;
   }
+
+  getByName(name:string):Promise<Ingredient>{
+    return  this.ingredientRepository.findOne({
+      where: { nom: name },
+    });
+  }
 }

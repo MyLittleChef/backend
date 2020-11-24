@@ -24,6 +24,13 @@ export class RecetteController {
   @Param('id', ParseIntPipe) recetteId:number): Promise<Recette> {
       return this.recetteService.get(recetteId);
   }
+
+  @Get('/search/:title')
+  async getRecetteByName(
+    @Param('title') title:string
+  ):Promise<Recette>{
+    return this.recetteService.getByName(title)
+  }
   
   @Post('')
   @UsePipes(ValidationPipe)

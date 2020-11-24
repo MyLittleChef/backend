@@ -27,4 +27,11 @@ export class IngredientController {
   ): Promise<void>{
     return this.ingredientService.delete(ingredientId);
   }
+
+  @Get('/search/:name')
+  async getRecetteByName(
+    @Param('name') name:string
+  ):Promise<Ingredient>{
+    return this.ingredientService.getByName(name)
+  }
 }
