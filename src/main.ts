@@ -9,15 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Enabled open CORS');
-    app.enableCors({methods: 'GET,PUT,POST,DELETE,OPTIONS'});
-  } else {
-    console.log('Enabled production CORS');
-    app.enableCors({
-      //origin: 'https://www.pictalk.xyz',
-      methods: 'GET,PUT,POST,DELETE,OPTIONS',
-    });
-  }
+  console.log('Node environment is :', process.env.NODE_ENV);
+  console.log('Port is : ', port);
+  console.log("Launched");
 }
 bootstrap();
