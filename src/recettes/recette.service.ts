@@ -21,7 +21,10 @@ export class RecetteService {
   private logger = new Logger('RecetteService');
 
   async create(createRecetteDto: CreateRecetteDto, filename:string): Promise<Recette> {
-   const ingredientquantities: IngredientQuantity[] = await Promise.all(createRecetteDto.ingredients.map(
+  const getArrayFromStringIfNeeded = function(input) {
+      return Array.isArray(input) == false ? new Array(input.toString()) : input;
+  };
+   const ingredientquantities: IngredientQuantity[] = await Promise.all(getArrayFromStringIfNeeded(createRecetteDto.ingredients).map(
        (ingredient:string) => this.ingredientquantityRepository.addIngredientsQuantity(JSON.parse(ingredient))
        )
    );
