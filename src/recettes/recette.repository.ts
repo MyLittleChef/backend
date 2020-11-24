@@ -33,11 +33,11 @@ export class RecetteRepository extends Repository<Recette> {
         recette.photopath = filename;
         recette.servings = servings;
         recette.category = category ? getArrayFromStringIfNeeded(category) : [];
-        recette.dishTypes = dishTypes ? dishTypes : [];
+        recette.dishTypes = dishTypes ? getArrayFromStringIfNeeded(dishTypes) : [];
         recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
         recette.difficulty = difficulty ? difficulty : Difficulty.VOID;
         recette.instructions = instructions ? instructions : "";
-        recette.materialNeeded = materialNeeded ? materialNeeded : [];
+        recette.materialNeeded = materialNeeded ? getArrayFromStringIfNeeded(materialNeeded) : [];
 
         try {
             await recette.save();
