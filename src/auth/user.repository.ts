@@ -189,7 +189,6 @@ export class UserRepository extends Repository<User> {
         );
         throw new InternalServerErrorException(error);
         }
-        console.log(getUser);
         return getUser.starredRecipes;
     }
   

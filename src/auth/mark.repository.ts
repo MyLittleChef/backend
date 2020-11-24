@@ -13,8 +13,6 @@ async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     const mark = this.create();
     mark.user = user;
     mark.recipe = {id : recipeId} as any;
-    console.log(score);
-    console.log(typeof(score));
     mark.score = score;
 
     try {
