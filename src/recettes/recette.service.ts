@@ -27,6 +27,7 @@ export class RecetteService {
        (ingredient:string) => this.ingredientquantityRepository.addIngredientsQuantity(JSON.parse(ingredient))
        )
    );
+   this.logger.verbose(`Created ingredientquantities: ${ingredientquantities} for the recipe: ${JSON.stringify(createRecetteDto)}`);
    return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
   }
 
