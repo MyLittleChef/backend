@@ -9,7 +9,7 @@ import {
   Logger,
   Param,
   ParseIntPipe,
-  Delete,
+  Delete, Query,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -102,6 +102,15 @@ export class AuthController {
     @Param('id', ParseIntPipe) id: number
   ): Promise<void>{
     return this.authService.deleteStarredRecipes(user, id);
+  }
+
+  @Get('/test')
+  @UseGuards(AuthGuard())
+  azerty(
+      @GetUser() user:User,
+      @Query() params
+  ){
+    return params;
   }
 
   @Get('/suggestedRecipes/:nb')
