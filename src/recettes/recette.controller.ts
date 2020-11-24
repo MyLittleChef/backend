@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post,  UsePipes, ValidationPipe, Delete, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post,  UsePipes, ValidationPipe, Delete, UseInterceptors, UploadedFile, Res, Logger } from '@nestjs/common';
 import { RecetteService } from './recette.service';
 import { Recette } from './entities/recette.entity';
 import { CreateRecetteDto } from './dto/create-recette.dto';
@@ -9,6 +9,7 @@ import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
 
 @Controller('recettes')
 export class RecetteController {
+  private logger = new Logger('RecetteController');
   constructor(private recetteService: RecetteService,
     ) {}
 
@@ -47,6 +48,7 @@ export class RecetteController {
     @Body() createRecetteDto: CreateRecetteDto,
     @UploadedFile() file,
   ): Promise<Recette> {
+    this.logger.verbose(`Creating recipe ${JSON.stringify(createRecetteDto)}`)
     if(file){
       return this.recetteService.create(createRecetteDto, file.filename);
     } else {

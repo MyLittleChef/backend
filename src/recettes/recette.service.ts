@@ -53,7 +53,7 @@ export class RecetteService {
     const { arraySize, start } = getRandomRecipesDto;
 
     return this.recetteRepository.find({
-      relations: ["ingredients"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(arraySize)
+      relations: ["ingredients","ingredients.ingredient"], where: { id: MoreThan(parseInt(start)-1)}, take: parseInt(arraySize)
     });
   }
 
