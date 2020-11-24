@@ -7,7 +7,6 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
-  ManyToOne,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Recette } from 'src/recettes/entities/recette.entity';
