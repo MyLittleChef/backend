@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { Difficulty } from '../entities/difficulty.enum';
 import { Provider } from "../entities/provider.enum";
 export class CreateRecetteDto {
@@ -6,6 +6,7 @@ export class CreateRecetteDto {
     title: string;
 
     @IsNotEmpty()
+    @IsEnum(Provider)
     provider: Provider;
 
     @IsNotEmpty()
@@ -27,6 +28,7 @@ export class CreateRecetteDto {
     materialNeeded: string;
 
     @IsOptional()
+    @IsEnum(Difficulty)
     difficulty: Difficulty;
 
     @IsNotEmpty()
