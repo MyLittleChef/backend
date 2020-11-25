@@ -104,22 +104,13 @@ export class AuthController {
     return this.authService.deleteStarredRecipes(user, id);
   }
 
-  @Get('/test')
-  @UseGuards(AuthGuard())
-  azerty(
-      @GetUser() user:User,
-      @Query() params
-  ){
-    return params;
-  }
-
-  @Get('/suggestedRecipes/:nb')
+  @Get('/suggestedRecipes')
   @UseGuards(AuthGuard())
   getSuggestedRecipes(
-    @GetUser() user:User,
-    @Param('nb', ParseIntPipe) nb:number
-    ): Promise<Recette[]>{
-    return this.authService.getSuggestedRecipes(user, nb);
+      @GetUser() user:User,
+      @Query() params
+  ): Promise<Recette[]>{
+    return this.authService.getSuggestedRecipes(user, params);
   }
 
   @Post(':id/suggestedRecipes')

@@ -105,18 +105,26 @@ export class AuthService {
     return this.userRepository.deleteDoneRecipes(user, recipeId);
   }
 
-  async getSuggestedRecipes(user:User, nb:number):Promise<Recette[]>{
+  async getSuggestedRecipes(user:User, params):Promise<Recette[]>{
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes","suggestedRecipes.ingredients","suggestedRecipes.ingredients.ingredient"], where: { id: user.id} });
+    let nb = parseInt(params['nb']);
+    let page = parseInt(params['page']);
+    let defaultNb = 2;
     if (getUser.suggestedRecipes.length == 0) {
       return await getRepository(Recette)
           .createQueryBuilder()
           .select('*')
           .from(Recette , 'recette')
           .orderBy('RANDOM()')
-          .limit(nb ? nb : 25)
+          .limit(nb ? nb : defaultNb)
           .execute();
     }
-    return getUser.suggestedRecipes;
+    if (page){
+      nb = (nb ? nb : defaultNb)
+      return getUser.suggestedRecipes.slice(-nb*page).slice(0,nb).reverse();
+    }else{
+      return getUser.suggestedRecipes.slice(-(nb ? nb : defaultNb)).reverse();
+    }
   }
 
   async addSuggestedRecipes(userId:number, addSuggestedRecipesDto: AddSuggestedRecipesDto):Promise<number[]>{
