@@ -108,8 +108,8 @@ export class AuthService {
   async getSuggestedRecipes(user:User, params):Promise<Recette[]>{
     const getUser = await this.userRepository.findOne({ relations: ["suggestedRecipes","suggestedRecipes.ingredients","suggestedRecipes.ingredients.ingredient"], where: { id: user.id} });
     let nb = parseInt(params['nb']);
-    let page = parseInt(params['page']);
-    let defaultNb = 25;
+    const page = parseInt(params['page']);
+    const defaultNb = 25;
     if (getUser.suggestedRecipes.length == 0) {
       return await getRepository(Recette)
           .createQueryBuilder()
