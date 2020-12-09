@@ -8,7 +8,23 @@ import * as rateLimit from 'express-rate-limit';
 async function bootstrap() {
   const serverConfig = config.get('server');
   const logger = new Logger('bootstrap');
-  const app = await NestFactory.create(AppModule);
+  async function getApp() {
+    try {
+      const fs = require('fs')
+      const keyFile = fs.readFileSync('/etc/letsencrypt/live/petit.flex.ovh/privkey.pem')
+      const certFile = fs.readFileSync('/etc/letsencrypt/live/petit.flex.ovh/fullchain.pem')
+      return await NestFactory.create(AppModule, {
+        httpsOptions: {
+          key: keyFile,
+          cert: certFile,
+        }
+      });
+    } catch {
+      return await NestFactory.create(AppModule);
+    }
+  }
+  const app = await getApp()
+
   const port = process.env.PORT || serverConfig.port;
   app.enableCors({
     origin: true,
