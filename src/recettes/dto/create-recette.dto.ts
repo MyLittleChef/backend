@@ -22,7 +22,7 @@ export class CreateRecetteDto {
     dishTypes: string[];
 
     @IsOptional()
-    instructions: string;
+    instructions: string[];
 
     @IsOptional()
     materialNeeded: string[];

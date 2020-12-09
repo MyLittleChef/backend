@@ -8,13 +8,14 @@ import {
     Logger,
   } from '@nestjs/common';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
+import {Instruction} from "./entities/instructions.entity";
 
 @EntityRepository(Recette)
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
     async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
-        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey, category, diets } = createRecetteDto;
+        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, materialNeeded, apiKey, category, diets } = createRecetteDto;
         if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
             throw new ForbiddenException('ApiKey not recognized');
         }
@@ -28,7 +29,7 @@ export class RecetteRepository extends Repository<Recette> {
         const getArrayFromStringIfNeeded = function(input) {
           return Array.isArray(input) == false ? new Array(input.toString()) : input;
         };
-        recette.ingredients = ingredientquantities.map(ingredientquantity=> ({ id: ingredientquantity.id } as any));
+        recette.ingredients = ingredientquantities.map(ingredientquantity => ({ id: ingredientquantity.id } as any));
         recette.readyInMinutes = readyInMinutes;
         recette.photopath = filename;
         recette.servings = servings;
@@ -36,7 +37,6 @@ export class RecetteRepository extends Repository<Recette> {
         recette.dishTypes = dishTypes ? getArrayFromStringIfNeeded(dishTypes) : [];
         recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
         recette.difficulty = difficulty ? difficulty : Difficulty.VOID;
-        recette.instructions = instructions ? instructions : "";
         recette.materialNeeded = materialNeeded ? getArrayFromStringIfNeeded(materialNeeded) : [];
 
         try {

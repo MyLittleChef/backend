@@ -8,14 +8,18 @@ import { IngredientQuantityRepository } from './ingredientquantity.repository';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
 import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
 import {MoreThan} from "typeorm";
+import {Instruction} from "./entities/instructions.entity";
+import {InstructionRepository} from "./instruction.repository";
 
 @Injectable()
 export class RecetteService {
   constructor(
     @InjectRepository(RecetteRepository)
     @InjectRepository(IngredientQuantityRepository)
+    @InjectRepository(InstructionRepository)
     private recetteRepository: RecetteRepository,
-    private ingredientquantityRepository: IngredientQuantityRepository
+    private ingredientquantityRepository: IngredientQuantityRepository,
+    private instructionRepository: InstructionRepository,
   ) {}
   private logger = new Logger('RecetteService');
 
@@ -28,7 +32,13 @@ export class RecetteService {
        )
    );
    this.logger.verbose(`Created ingredientquantities: ${ingredientquantities} for the recipe: ${JSON.stringify(createRecetteDto)}`);
-   return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
+   const createdRecipe = await this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
+   const instructions : Instruction[] = await Promise.all(getArrayFromStringIfNeeded(createRecetteDto.instructions).map(
+       (instruction:string) => this.instructionRepository.createInstruction(JSON.parse(instruction), createdRecipe)
+       )
+   );
+   createdRecipe.instructions = instructions;
+   return createdRecipe;
   }
 
   async get(recetteId: number): Promise<Recette> {
