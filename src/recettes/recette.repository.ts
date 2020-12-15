@@ -8,13 +8,14 @@ import {
     Logger,
   } from '@nestjs/common';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
+import { Instruction } from './entities/instruction.entity';
 
 @EntityRepository(Recette)
 export class RecetteRepository extends Repository<Recette> {
     private logger = new Logger('RecetteRepository');
     
-    async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[]): Promise<Recette> {
-        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, instructions, materialNeeded, apiKey, category, diets } = createRecetteDto;
+    async createRecette(createRecetteDto: CreateRecetteDto, filename:string, ingredientquantities: IngredientQuantity[], instructions: Instruction[]): Promise<Recette> {
+        const { title, provider, difficulty, readyInMinutes, servings, dishTypes, materialNeeded, apiKey, category, diets } = createRecetteDto;
         if (apiKey !== 'c8g6s2e375bf14e47ae411c4ab6751449') {
             throw new ForbiddenException('ApiKey not recognized');
         }
@@ -36,7 +37,7 @@ export class RecetteRepository extends Repository<Recette> {
         recette.dishTypes = dishTypes ? getArrayFromStringIfNeeded(dishTypes) : [];
         recette.diets = diets ? getArrayFromStringIfNeeded(diets) : [];
         recette.difficulty = difficulty ? difficulty : Difficulty.VOID;
-        recette.instructions = instructions ? instructions : "";
+        recette.instructions = instructions;
         recette.materialNeeded = materialNeeded ? getArrayFromStringIfNeeded(materialNeeded) : [];
 
         try {

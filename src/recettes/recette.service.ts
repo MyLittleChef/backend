@@ -8,14 +8,16 @@ import { IngredientQuantityRepository } from './ingredientquantity.repository';
 import { IngredientQuantity } from './entities/ingredientquantity.entity';
 import {GetConsecutiveRecipesDto} from "./dto/get-consecutive-recipes-dto";
 import {MoreThan} from "typeorm";
-
+import { InstructionRepository } from './instruction.repository';
+import { Instruction } from './entities/instruction.entity';
 @Injectable()
 export class RecetteService {
   constructor(
     @InjectRepository(RecetteRepository)
     @InjectRepository(IngredientQuantityRepository)
     private recetteRepository: RecetteRepository,
-    private ingredientquantityRepository: IngredientQuantityRepository
+    private ingredientquantityRepository: IngredientQuantityRepository,
+    private instructionRepository: InstructionRepository
   ) {}
   private logger = new Logger('RecetteService');
 
@@ -27,14 +29,34 @@ export class RecetteService {
        (ingredient:string) => this.ingredientquantityRepository.addIngredientsQuantity(JSON.parse(ingredient))
        )
    );
+   let instructions: Instruction[] = []
+    if (createRecetteDto.instructions) {
+      instructions = await Promise.all(
+        JSON.parse(createRecetteDto.instructions).map(
+          (instruction, index) => this.instructionRepository.createInstruction(
+            Object.assign(
+              { "content": instruction },
+              { "index": index + 1 }
+            )
+          )
+        )
+      )
+    }
+
    this.logger.verbose(`Created ingredientquantities: ${ingredientquantities} for the recipe: ${JSON.stringify(createRecetteDto)}`);
-   return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities);
+   return this.recetteRepository.createRecette(createRecetteDto, filename, ingredientquantities, instructions);
   }
 
   async get(recetteId: number): Promise<Recette> {
-    return  this.recetteRepository.findOne({
-       relations: ["ingredients","ingredients.ingredient"],where: { id: recetteId },
+    const queriedRecipe = await this.recetteRepository.findOne({
+      relations: ["ingredients", "ingredients.ingredient", "instructions"],
+      where: { id: recetteId },
      });
+    Object.assign(
+      queriedRecipe,
+      {"instructions" : queriedRecipe.instructions.map(instruction => instruction.content) }
+      )
+    return queriedRecipe;
    }
 
   async remove(recetteId: number): Promise<void> {

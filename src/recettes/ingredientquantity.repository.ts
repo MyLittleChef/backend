@@ -1,6 +1,5 @@
 import { Repository, EntityRepository } from 'typeorm';
 import {
-    ConflictException,
     InternalServerErrorException,
     Logger,
   } from '@nestjs/common';

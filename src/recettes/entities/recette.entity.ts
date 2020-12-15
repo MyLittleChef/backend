@@ -4,13 +4,11 @@ import {
     Unique,
     PrimaryGeneratedColumn,
     Column,
-    ManyToMany,
-    JoinTable,
     OneToMany,
 } from 'typeorm';
 import { Difficulty } from './difficulty.enum';
-import { Ingredient } from './ingredient.entity';
 import { IngredientQuantity } from './ingredientquantity.entity';
+import { Instruction } from './instruction.entity';
 import { Provider } from './provider.enum';
 @Entity()
 @Unique(['provider','title'])
@@ -36,8 +34,8 @@ export class Recette extends BaseEntity {
     @Column("text", { array: true })
     dishTypes: string[];
 
-    @Column()
-    instructions: string;
+    @OneToMany(() => Instruction, Instruction => Instruction.recette)
+    instructions: Instruction[];
 
     @Column("text", { array: true })
     materialNeeded: string[];
