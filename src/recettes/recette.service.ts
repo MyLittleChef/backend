@@ -55,7 +55,19 @@ export class RecetteService {
     Object.assign(
       queriedRecipe,
       {"instructions" : queriedRecipe.instructions.map(instruction => instruction.content) }
-      )
+    )
+    Object.assign(
+      queriedRecipe,
+      {"ingredients" : queriedRecipe.ingredients.map(
+        function(ingredient) {
+          const res:any = {};
+          res.quantity = ingredient.quantity;
+          res.name = ingredient.ingredient.nom;
+          res.unit = ingredient.ingredient.uniteMesure;
+          return (res);
+        }
+      )}
+    )
     return queriedRecipe;
    }
 
