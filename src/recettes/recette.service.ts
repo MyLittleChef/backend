@@ -61,6 +61,7 @@ export class RecetteService {
       {"ingredients" : queriedRecipe.ingredients.map(
         function(ingredient) {
           const res:any = {};
+          res.id = ingredient.id;
           res.quantity = ingredient.quantity;
           res.name = ingredient.ingredient.nom;
           res.unit = ingredient.ingredient.uniteMesure;
