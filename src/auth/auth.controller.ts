@@ -188,6 +188,15 @@ export class AuthController {
     return this.markService.getMark(id, getMarkDto);
   }
 
+  @Get('/recipe/:id/mark')
+  @UseGuards(AuthGuard())
+  getRecipeMark(
+    @GetUser() user:User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Mark> {
+    return this.markService.getRecipeMark(user, id);
+  }
+
   @Post('/mark')
   @UseGuards(AuthGuard())
   createMark(

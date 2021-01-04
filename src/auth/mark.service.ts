@@ -24,6 +24,12 @@ export class MarkService {
       });
   }
 
+  async getRecipeMark(user:User, id:number):Promise<Mark>{
+    return this.markRepository.findOne({
+      where: { recipe: id, user: user.id },
+    });
+  }
+
   createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     return this.markRepository.createMark(user, createMarkDto);
   }
