@@ -27,4 +27,8 @@ export class MarkService {
   createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     return this.markRepository.createMark(user, createMarkDto);
   }
+
+  editMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
+    return this.markRepository.editMark(user, createMarkDto);
+  }
 }

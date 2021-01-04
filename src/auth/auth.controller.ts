@@ -197,6 +197,15 @@ export class AuthController {
     return this.markService.createMark(user,createMarkDto);
   }
 
+  @Put('/mark')
+  @UseGuards(AuthGuard())
+  editMark(
+    @GetUser() user:User,
+    @Body(ValidationPipe) createMarkDto: CreateMarkDto,
+  ): Promise<Mark>{
+    return this.markService.editMark(user,createMarkDto);
+  }
+
   @Get('/toRecalculate')
   getToRecalculateUsers(
     @Body('apiKey') apiKey:string

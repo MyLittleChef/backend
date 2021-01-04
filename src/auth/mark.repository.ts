@@ -31,4 +31,27 @@ async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
     delete mark.user;
     return mark;
   }
+
+    async editMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
+        const { recipeId, score } = createMarkDto
+        const recipe = {id : recipeId} as any;
+        const mark = await this.findOne(1,{ where: { user: user, recipe: recipe} });
+        mark.score = score;
+
+        try {
+            await mark.save();
+        } catch(error){
+            if(error.code == 23505) {
+                throw new ConflictException('Mark already assigned');
+            } else {
+                this.logger.verbose(
+                  `Problem while saving the Mark: ${mark.recipe}, error is : ${error} !`,
+                );
+                throw new InternalServerErrorException(error);
+            }
+        }
+        this.logger.verbose(`Mark ${mark.recipe} is being saved !`);
+        delete mark.user;
+        return mark;
+    }
 }
