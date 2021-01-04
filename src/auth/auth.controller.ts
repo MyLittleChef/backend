@@ -197,6 +197,14 @@ export class AuthController {
     return this.markService.getRecipeMark(user, id);
   }
 
+  @Get('/recipeMarks')
+  @UseGuards(AuthGuard())
+  getRecipeMarks(
+    @GetUser() user:User,
+  ): Promise<Mark[]> {
+    return this.markService.getRecipeMarks(user);
+  }
+
   @Post('/mark')
   @UseGuards(AuthGuard())
   createMark(
