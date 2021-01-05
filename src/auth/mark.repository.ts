@@ -28,14 +28,28 @@ async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
         }
     }
     this.logger.verbose(`Mark ${ mark.recipe } is being saved !`);
+
+    Object.assign(
+      mark,
+      {"id" : mark.recipe.id }
+    )
+
     delete mark.user;
+    delete mark.recipe;
+
     return mark;
   }
 
     async editMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark> {
         const { recipeId, score } = createMarkDto
         const recipe = { id : recipeId } as any;
-        const mark = await this.findOne({ where: { user: user, recipe: recipe} });
+        let mark = await this.findOne({ where: { user: user, recipe: recipe } });
+        if (mark == undefined) {
+            mark = this.create()
+        }
+
+        mark.user = user;
+        mark.recipe = { id : recipeId } as any;
         mark.score = score;
 
         try {
@@ -45,13 +59,21 @@ async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
                 throw new ConflictException('Mark already assigned');
             } else {
                 this.logger.verbose(
-                  `Problem while saving the Mark: ${mark.recipe}, error is : ${error} !`,
+                  `Problem while saving the Mark: ${ mark.recipe }, error is : ${ error } !`,
                 );
                 throw new InternalServerErrorException(error);
             }
         }
-        this.logger.verbose(`Mark ${mark.recipe} is being saved !`);
+        this.logger.verbose(`Mark ${ mark.recipe } is being saved !`);
+
+        Object.assign(
+          mark,
+          {"id" : mark.recipe.id }
+        )
+        
         delete mark.user;
+        delete mark.recipe;
+
         return mark;
     }
 }

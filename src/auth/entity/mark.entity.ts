@@ -9,7 +9,7 @@ export class Mark extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Recette, recette => recette.id)
+  @ManyToOne(() => Recette, recette => recette.id, {eager: true})
   recipe: Recette;
 
   @Column()

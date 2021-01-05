@@ -31,9 +31,21 @@ export class MarkService {
   }
 
   async getRecipeMarks(user:User):Promise<Mark[]>{
-    return this.markRepository.find({
+    const recipeMarks = await this.markRepository.find({
       where: { user: user },
     });
+
+    recipeMarks.forEach( mark =>
+      Object.assign(
+        mark,
+        {"id" : mark.recipe.id }
+      )
+    )
+    recipeMarks.forEach( mark =>
+      delete mark.recipe
+    )
+
+    return recipeMarks;
   }
 
   createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
