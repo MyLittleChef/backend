@@ -70,7 +70,7 @@ async createMark(user:User, createMarkDto: CreateMarkDto):Promise<Mark>{
           mark,
           {"id" : mark.recipe.id }
         )
-        
+
         delete mark.user;
         delete mark.recipe;
 

@@ -25,9 +25,16 @@ export class MarkService {
   }
 
   async getRecipeMark(user:User, id:number):Promise<Mark>{
-    return this.markRepository.findOne({
+    const mark = await this.markRepository.findOne({
       where: { recipe: id, user: user },
     });
+
+    Object.assign(
+      mark,
+      {"id" : mark.recipe.id }
+    )
+    delete mark.recipe
+    return mark;
   }
 
   async getRecipeMarks(user:User):Promise<Mark[]>{
