@@ -29,6 +29,7 @@ import { CreateShoppingItemDto } from './dto/create-shoppingItem.dto';
 import {AddSuggestedRecipesDto} from "./dto/add-suggested-recipes.dto";
 import {DeleteSuggestedRecipesDto} from "./dto/delete-suggested-recipes.dto";
 import { GetMarkDto } from "./dto/getMark.dto";
+import { GetRecipeMarksDto } from './dto/getRecipeMarks.dto';
 @Controller('user')
 export class AuthController {
   private logger = new Logger('AuthController');
@@ -203,6 +204,12 @@ export class AuthController {
     @GetUser() user:User,
   ): Promise<Mark[]> {
     return this.markService.getRecipeMarks(user);
+  }
+  @Get('/recipeMarksApi')
+  getRecipeMarksApi(
+    @Body(ValidationPipe) getRecipeMarksDto:GetRecipeMarksDto
+  ): Promise<Mark[]> {
+    return this.markService.getRecipeMarksApi(getRecipeMarksDto);
   }
 
   @Post('/mark')
